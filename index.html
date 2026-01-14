@@ -1,36 +1,33 @@
-<!DOCTYPE html>
-<html lang="th">
+<!DOCTYPE html><html lang="th">
 <head>
-<meta charset="UTF-8">
-<title>SQL Skill Test</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
-
-<style>
-body { font-family: system-ui,sans-serif; margin:20px; background:#f7f7f7; }
-h1,h2 { color:#1f2937; }
-.box { background:#fff; padding:20px; margin-bottom:20px; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,.08); }
-textarea { width:100%; height:100px; }
-button { padding:8px 16px; border-radius:8px; border:none; background:#2563eb; color:white; margin-top:8px; }
-.hidden { display:none; }
-.success { color:green; }
-.error { color:red; }
-pre { background:#111827; color:#e5e7eb; padding:12px; border-radius:8px; overflow:auto; }
-</style>
+  <meta charset="UTF-8" />
+  <title>SQL Skill Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 20px; background:#f7f7f7; }
+    h1,h2 { color:#1f2937; }
+    .box { background:white; padding:20px; margin-bottom:20px; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,.08); }
+    textarea { width:100%; height:120px; }
+    button { padding:8px 16px; border-radius:8px; border:none; background:#2563eb; color:white; }
+    .hidden { display:none; }
+    .success { color:green; }
+    .error { color:red; }
+  </style>
 </head>
-
-<body>
-
-<h1>📘 SQL Skill Test</h1>
-<p>เว็บไซต์สอนและสอบปฏิบัติ SQL (VIEW & Subquery) | T.nuch Smart ComClass</p>
-
-<div class="box">
-<h2>🎥 วิดีโอสอน</h2>
-<div style="position:relative;padding-top:56.25%;">
-<iframe src="https://www.youtube.com/embed/_tocAYU6jl0"
-style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:12px;"
-allowfullscreen></iframe>
-</div>
+<body><h1>📘 SQL Skill Test</h1>
+<p>เว็บไซต์สอนและสอบปฏิบัติ SQL (VIEW & Subquery)  | สอนและสอบปฏิบัติ | T.nuch Smart ComClass | สอนคอมพิวเตอร์อย่างเข้าใจ ในแบบของครูนุช</p><div class="box">
+  <h2>🎥 วิดีโอสอนก่อนทำแบบทดสอบ</h2>
+  <p>นักเรียนควรรับชมวิดีโอนี้ก่อนเริ่มทำแบบทดสอบ เพื่อทบทวนแนวคิดและตัวอย่างการเขียน SQL</p>
+<div style="position:relative;padding-top:56.25%;margin-bottom:15px;">
+  <iframe 
+    src="https://www.youtube.com/embed/_tocAYU6jl0"
+    title="SQL VIEW & Subquery"
+    style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:12px;"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowfullscreen>
+  </iframe>
 </div>
 
 <div class="box">
@@ -46,104 +43,102 @@ GROUP BY region;
 </section>
 </div>
 
-<div class="box">
-<label>👤 ชื่อนักเรียน: <input id="student"></label>
-<select id="mode">
-<option value="learn">โหมดเรียน</option>
-<option value="exam">โหมดสอบ</option>
-</select>
-<button onclick="start()">เริ่มต้น</button>
-<button onclick="resetAll()" style="background:#dc2626;">ล้างข้อมูลทั้งหมด</button>
-</div>
-
-<div id="content" class="hidden">
-
-<div class="box">⏱ เวลา: <span id="timer">--:--</span></div>
-
-<!-- QUESTION TEMPLATE -->
-<div class="box">
-<h2>ข้อ 1</h2>
-<p>VIEW คืออะไร?</p>
-<input type="radio" name="q1" value="1"> Virtual Table<br>
-<input type="radio" name="q1" value="0"> Physical Table<br>
-</div>
-
-<div class="box">
-<h2>ข้อ 2</h2>
-<p>คำสั่งใดใช้สร้าง VIEW?</p>
-<input type="radio" name="q2" value="2"> CREATE VIEW<br>
-<input type="radio" name="q2" value="0"> CREATE TABLE<br>
-</div>
-
-<div class="box">
-<h2>ข้อ 3</h2>
-<p>VIEW ช่วยเรื่องใดมากที่สุด?</p>
-<input type="radio" name="q3" value="2"> ความปลอดภัย<br>
-<input type="radio" name="q3" value="0"> เพิ่ม Hardware<br>
-</div>
-
-<div class="box">
-<h2>ข้อ 4</h2>
-<p>VIEW เก็บข้อมูลจริงหรือไม่?</p>
-<input type="radio" name="q4" value="0"> เก็บข้อมูลจริง<br>
-<input type="radio" name="q4" value="2"> ไม่เก็บข้อมูลจริง<br>
-</div>
-
-<div class="box">
-<h2>ข้อ 5</h2>
-<p>VIEW ได้ผลลัพธ์จากคำสั่งใด?</p>
-<input type="radio" name="q5" value="2"> SELECT<br>
-<input type="radio" name="q5" value="0"> INSERT<br>
-</div>
-
-<div class="box">
-<h2>📊 คะแนนรวม</h2>
-<p id="score">0</p>
-<button onclick="finish()">ส่งข้อสอบ</button>
-</div>
-
-</div>
-
-<script>
+  
+</div><div class="box">
+  <h2>📖 วิธีทำแบบทดสอบปฏิบัติ</h2>
+  <ol>
+    <li>กรอก <b>ชื่อนักเรียน</b> ให้ถูกต้อง</li>
+    <li>เลือกโหมด <b>โหมดเรียน</b> (ดูเฉลย) หรือ <b>โหมดสอบ</b> (ไม่มีเฉลย)</li>
+    <li>กดปุ่ม <b>เริ่มต้น</b></li>
+    <li>อ่านโจทย์แต่ละข้ออย่างละเอียด</li>
+    <li>พิมพ์คำสั่ง SQL ลงในช่องว่าง</li>
+    <li>กด <b>ตรวจคำตอบ</b> เพื่อประเมินผล</li>
+    <li>ระบบจะตรวจสอบและให้คะแนนอัตโนมัติ</li>
+    <li>เมื่อทำครบ กด <b>ส่งข้อสอบ</b> เพื่อบันทึกคะแนน</li>
+  </ol>
+  <p><b>หมายเหตุ:</b> โหมดสอบจะมีการจับเวลา เมื่อหมดเวลาระบบจะส่งข้อสอบให้อัตโนมัติ</p>
+</div><div class="box">
+  <label>👤 ชื่อนักเรียน: <input id="student" /></label>
+  <select id="mode">
+    <option value="learn">โหมดเรียน</option>
+    <option value="exam">โหมดสอบ</option>
+  </select>
+  <button onclick="start()">เริ่มต้น</button>
+  <button onclick="resetAll()" style="background:#dc2626;">ล้างข้อมูลทั้งหมด</button>
+</div><div id="content" class="hidden">
+  <div class="box">
+    ⏱ เวลา: <span id="timer">--:--</span>
+  </div>  <div class="box">
+    <h2>ข้อ 1 : สร้าง VIEW</h2>
+    <p>จงเขียน SQL เพื่อสร้าง VIEW ชื่อ <b>cpu_view</b> จากตาราง product เฉพาะ category = 'CPU'</p>
+    <textarea id="q1"></textarea>
+    <button onclick="checkQ1()">ตรวจคำตอบ</button>
+    <p id="r1"></p>
+    <div id="a1" class="hidden">
+      <pre>CREATE VIEW cpu_view AS SELECT * FROM product WHERE category='CPU';</pre>
+    </div>
+  </div>  <div class="box">
+    <h2>ข้อ 2 : Subquery</h2>
+    <p>แสดงสินค้าที่ราคามากกว่าราคาเฉลี่ยทั้งหมด</p>
+    <textarea id="q2"></textarea>
+    <button onclick="checkQ2()">ตรวจคำตอบ</button>
+    <p id="r2"></p>
+    <div id="a2" class="hidden">
+      <pre>SELECT * FROM product WHERE price > (SELECT AVG(price) FROM product);</pre>
+    </div>
+  </div>  <div class="box">
+    <h2>📊 คะแนนรวม</h2>
+    <p id="score">0</p>
+    <button onclick="finish()">ส่งข้อสอบ</button>
+  </div>
+</div><script>
 let score = 0;
-let time = 900;
+let time = 900; // 15 นาที
 let timer;
 
 function start(){
-if(!student.value){ alert('กรอกชื่อ'); return; }
-content.classList.remove('hidden');
-if(mode.value==='exam'){
-timer=setInterval(()=>{
-time--; timerEl();
-if(time<=0) finish();
-},1000);
-}
+  if(!student.value){ alert('กรอกชื่อ'); return; }
+  content.classList.remove('hidden');
+  if(mode.value === 'exam'){
+    timer = setInterval(()=>{
+      time--;
+      timerEl();
+      if(time<=0) finish();
+    },1000);
+  }
 }
 
 function timerEl(){
-document.getElementById('timer').innerText =
-Math.floor(time/60)+":"+(time%60).toString().padStart(2,'0');
+  timerText = Math.floor(time/60)+":"+(time%60).toString().padStart(2,'0');
+  document.getElementById('timer').innerText = timerText;
 }
+
+function checkQ1(){
+  let sql = q1.value.toLowerCase();
+  if(sql.includes('create view') && sql.includes('cpu')){
+    score += 20;
+    r1.innerHTML = '<span class="success">✔ ถูกต้อง</span>';
+  } else r1.innerHTML = '<span class="error">✘ ยังไม่ถูก</span>';
+  scoreEl();
+  if(mode.value==='learn') a1.classList.remove('hidden');
+}
+
+function checkQ2(){
+  let sql = q2.value.toLowerCase();
+  if(sql.includes('avg') && sql.includes('select')){
+    score += 20;
+    r2.innerHTML = '<span class="success">✔ ถูกต้อง</span>';
+  } else r2.innerHTML = '<span class="error">✘ ยังไม่ถูก</span>';
+  scoreEl();
+  if(mode.value==='learn') a2.classList.remove('hidden');
+}
+
+function scoreEl(){ document.getElementById('score').innerText = score; }
 
 function finish(){
-score=0;
-for(let i=1;i<=5;i++){
-let q=document.querySelector(`input[name=q${i}]:checked`);
-if(q) score+=parseInt(q.value);
+  clearInterval(timer);
+  localStorage.setItem(student.value, score);
+  alert('บันทึกคะแนนแล้ว: '+score);
 }
-document.getElementById('score').innerText=score;
-localStorage.setItem(student.value,score);
-alert('บันทึกคะแนนแล้ว: '+score);
-clearInterval(timer);
-}
-
-function resetAll(){
-if(confirm('ต้องการล้างข้อมูลทั้งหมดหรือไม่?')){
-localStorage.clear();
-location.reload();
-}
-}
-</script>
-
-</body>
-</html>
+</script></body>
+</html> 
