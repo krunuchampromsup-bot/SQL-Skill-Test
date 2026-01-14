@@ -1,71 +1,102 @@
 <!DOCTYPE html><html lang="th">
 <head>
   <meta charset="UTF-8" />
-  <title>ระบบสอบ SQL + AR | ปวช.</title>
+  <title>SQL Blueprint Lab | สอนและสอบปฏิบัติ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
-  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
   <style>
-    body { font-family: sans-serif; margin: 20px; }
-    textarea { width: 100%; height: 120px; }
+    body { font-family: system-ui, sans-serif; margin: 20px; background:#f7f7f7; }
+    h1,h2 { color:#1f2937; }
+    .box { background:white; padding:20px; margin-bottom:20px; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,.08); }
+    textarea { width:100%; height:120px; }
+    button { padding:8px 16px; border-radius:8px; border:none; background:#2563eb; color:white; }
     .hidden { display:none; }
-    .box { border:1px solid #ccc; padding:15px; margin-bottom:20px; border-radius:10px; }
+    .success { color:green; }
+    .error { color:red; }
   </style>
 </head>
-<body><h1>📘 ระบบเรียน–สอบ SQL VIEW & Subquery (ปวช.)</h1><div class="box">
-  <label>👤 ชื่อนักเรียน: <input id="studentName" /></label>
-  <button onclick="startExam()">เริ่มสอบ</button>
-</div><div id="exam" class="hidden">
+<body><h1>📘 SQL Blueprint Lab</h1>
+<p>เว็บไซต์สอนและสอบปฏิบัติ SQL (VIEW & Subquery) สำหรับ ปวช.</p><div class="box">
+  <label>👤 ชื่อนักเรียน: <input id="student" /></label>
+  <select id="mode">
+    <option value="learn">โหมดเรียน</option>
+    <option value="exam">โหมดสอบ</option>
+  </select>
+  <button onclick="start()">เริ่มต้น</button>
+</div><div id="content" class="hidden">
   <div class="box">
-    ⏱ เวลาเหลือ: <span id="timer">10:00</span>
+    ⏱ เวลา: <span id="timer">--:--</span>
   </div>  <div class="box">
-    <h3>ข้อ 1: สร้าง VIEW student_view</h3>
+    <h2>ข้อ 1 : สร้าง VIEW</h2>
+    <p>จงเขียน SQL เพื่อสร้าง VIEW ชื่อ <b>cpu_view</b> จากตาราง product เฉพาะ category = 'CPU'</p>
     <textarea id="q1"></textarea>
     <button onclick="checkQ1()">ตรวจคำตอบ</button>
     <p id="r1"></p>
+    <div id="a1" class="hidden">
+      <pre>CREATE VIEW cpu_view AS SELECT * FROM product WHERE category='CPU';</pre>
+    </div>
   </div>  <div class="box">
-    <h3>📊 คะแนนรวม</h3>
+    <h2>ข้อ 2 : Subquery</h2>
+    <p>แสดงสินค้าที่ราคามากกว่าราคาเฉลี่ยทั้งหมด</p>
+    <textarea id="q2"></textarea>
+    <button onclick="checkQ2()">ตรวจคำตอบ</button>
+    <p id="r2"></p>
+    <div id="a2" class="hidden">
+      <pre>SELECT * FROM product WHERE price > (SELECT AVG(price) FROM product);</pre>
+    </div>
+  </div>  <div class="box">
+    <h2>📊 คะแนนรวม</h2>
     <p id="score">0</p>
-    <button onclick="finishExam()">ส่งข้อสอบ</button>
+    <button onclick="finish()">ส่งข้อสอบ</button>
   </div>
-</div><hr/>
-<h2>📱 โหมด AR (สแกน Marker)</h2>
-<a-scene mindar-image="imageTargetSrc: markers.mind;" embedded>
-  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-  <a-entity mindar-image-target="targetIndex: 0">
-    <a-text value="CPU : FP1–FP4" position="0 0 0" color="red"></a-text>
-  </a-entity>
-</a-scene><script>
+</div><script>
 let score = 0;
-let time = 600;
-let timerInterval;
+let time = 900; // 15 นาที
+let timer;
 
-function startExam(){
-  if(!studentName.value){ alert('กรอกชื่อ'); return; }
-  document.getElementById('exam').classList.remove('hidden');
-  timerInterval = setInterval(()=>{
-    time--;
-    document.getElementById('timer').innerText = Math.floor(time/60)+":"+(time%60).toString().padStart(2,'0');
-    if(time<=0) finishExam();
-  },1000);
-}
-
-function checkQ1(){
-  let sql = document.getElementById('q1').value.toLowerCase();
-  if(sql.includes('create view')){
-    score += 10;
-    document.getElementById('r1').innerText = '✔ ถูกต้อง';
-    document.getElementById('score').innerText = score;
-  } else {
-    document.getElementById('r1').innerText = '✘ ยังไม่ถูก';
+function start(){
+  if(!student.value){ alert('กรอกชื่อ'); return; }
+  content.classList.remove('hidden');
+  if(mode.value === 'exam'){
+    timer = setInterval(()=>{
+      time--;
+      timerEl();
+      if(time<=0) finish();
+    },1000);
   }
 }
 
-function finishExam(){
-  clearInterval(timerInterval);
-  localStorage.setItem(studentName.value, score);
-  alert('ส่งข้อสอบแล้ว คะแนน: '+score);
+function timerEl(){
+  timerText = Math.floor(time/60)+":"+(time%60).toString().padStart(2,'0');
+  document.getElementById('timer').innerText = timerText;
+}
+
+function checkQ1(){
+  let sql = q1.value.toLowerCase();
+  if(sql.includes('create view') && sql.includes('cpu')){
+    score += 20;
+    r1.innerHTML = '<span class="success">✔ ถูกต้อง</span>';
+  } else r1.innerHTML = '<span class="error">✘ ยังไม่ถูก</span>';
+  scoreEl();
+  if(mode.value==='learn') a1.classList.remove('hidden');
+}
+
+function checkQ2(){
+  let sql = q2.value.toLowerCase();
+  if(sql.includes('avg') && sql.includes('select')){
+    score += 20;
+    r2.innerHTML = '<span class="success">✔ ถูกต้อง</span>';
+  } else r2.innerHTML = '<span class="error">✘ ยังไม่ถูก</span>';
+  scoreEl();
+  if(mode.value==='learn') a2.classList.remove('hidden');
+}
+
+function scoreEl(){ document.getElementById('score').innerText = score; }
+
+function finish(){
+  clearInterval(timer);
+  localStorage.setItem(student.value, score);
+  alert('บันทึกคะแนนแล้ว: '+score);
 }
 </script></body>
 </html>
