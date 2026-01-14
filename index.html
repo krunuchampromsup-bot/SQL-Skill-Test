@@ -1,0 +1,71 @@
+<!DOCTYPE html><html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>ระบบสอบ SQL + AR | ปวช.</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    textarea { width: 100%; height: 120px; }
+    .hidden { display:none; }
+    .box { border:1px solid #ccc; padding:15px; margin-bottom:20px; border-radius:10px; }
+  </style>
+</head>
+<body><h1>📘 ระบบเรียน–สอบ SQL VIEW & Subquery (ปวช.)</h1><div class="box">
+  <label>👤 ชื่อนักเรียน: <input id="studentName" /></label>
+  <button onclick="startExam()">เริ่มสอบ</button>
+</div><div id="exam" class="hidden">
+  <div class="box">
+    ⏱ เวลาเหลือ: <span id="timer">10:00</span>
+  </div>  <div class="box">
+    <h3>ข้อ 1: สร้าง VIEW student_view</h3>
+    <textarea id="q1"></textarea>
+    <button onclick="checkQ1()">ตรวจคำตอบ</button>
+    <p id="r1"></p>
+  </div>  <div class="box">
+    <h3>📊 คะแนนรวม</h3>
+    <p id="score">0</p>
+    <button onclick="finishExam()">ส่งข้อสอบ</button>
+  </div>
+</div><hr/>
+<h2>📱 โหมด AR (สแกน Marker)</h2>
+<a-scene mindar-image="imageTargetSrc: markers.mind;" embedded>
+  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+  <a-entity mindar-image-target="targetIndex: 0">
+    <a-text value="CPU : FP1–FP4" position="0 0 0" color="red"></a-text>
+  </a-entity>
+</a-scene><script>
+let score = 0;
+let time = 600;
+let timerInterval;
+
+function startExam(){
+  if(!studentName.value){ alert('กรอกชื่อ'); return; }
+  document.getElementById('exam').classList.remove('hidden');
+  timerInterval = setInterval(()=>{
+    time--;
+    document.getElementById('timer').innerText = Math.floor(time/60)+":"+(time%60).toString().padStart(2,'0');
+    if(time<=0) finishExam();
+  },1000);
+}
+
+function checkQ1(){
+  let sql = document.getElementById('q1').value.toLowerCase();
+  if(sql.includes('create view')){
+    score += 10;
+    document.getElementById('r1').innerText = '✔ ถูกต้อง';
+    document.getElementById('score').innerText = score;
+  } else {
+    document.getElementById('r1').innerText = '✘ ยังไม่ถูก';
+  }
+}
+
+function finishExam(){
+  clearInterval(timerInterval);
+  localStorage.setItem(studentName.value, score);
+  alert('ส่งข้อสอบแล้ว คะแนน: '+score);
+}
+</script></body>
+</html>
