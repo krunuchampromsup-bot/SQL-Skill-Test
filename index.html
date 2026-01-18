@@ -18,6 +18,7 @@
             --syntax-bg: #1e293b;
             --border: #e2e8f0;
             --gold: #f59e0b;
+            --error: #ef4444;
         }
 
         body {
@@ -70,7 +71,7 @@
         .table-sim {
             width: 100%; border-collapse: collapse; margin: 15px 0;
             background: white; border-radius: 8px; overflow: hidden;
-            font-size: 0.9rem;
+            font-size: 0.9rem; border: 1px solid var(--border);
         }
         .table-sim th { background: #f8fafc; color: var(--primary); padding: 12px; text-align: left; border-bottom: 2px solid var(--border); }
         .table-sim td { padding: 12px; border-bottom: 1px solid var(--border); }
@@ -84,11 +85,15 @@
         .btn-success { background: var(--accent); color: white; margin-top: 10px; }
 
         textarea {
-            width: 100%; height: 90px; padding: 15px; border-radius: 8px;
+            width: 100%; height: 100px; padding: 15px; border-radius: 8px;
             border: 2px solid var(--border); margin: 10px 0; font-family: 'Consolas', monospace; 
-            box-sizing: border-box; font-size: 1rem; outline: none;
+            box-sizing: border-box; font-size: 1rem; outline: none; resize: vertical;
         }
         textarea:focus { border-color: var(--primary); }
+
+        .feedback { margin-top: 15px; padding: 15px; border-radius: 8px; display: none; }
+        .feedback.correct { background: #f0fdf4; color: #166534; display: block; border: 1px solid #bbf7d0; }
+        .feedback.wrong { background: #fef2f2; color: #991b1b; display: block; border: 1px solid #fecaca; }
 
         .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         .leaderboard-table th { background: var(--primary); color: white; padding: 15px; }
@@ -104,187 +109,169 @@
 <div class="container">
     <div class="edu-header">
         <h1><i class="fas fa-database"></i> SQL VIEW Master Class</h1>
-        <p>หลักสูตรจัดการฐานข้อมูลออนไลน์ โดย ครูนุช Smart Com</p>
+        <p>บทเรียนโต้ตอบ: สร้างและจัดการตารางเสมือน โดย ครูนุช Smart Com</p>
     </div>
 
     <div id="lesson-area" class="box">
         <div class="tab-container">
-            <button class="tab-btn active" onclick="openTab(event, 'tab-create')">VIEW TABLE</button>
-            <button class="tab-btn" onclick="openTab(event, 'tab-insert')">INSERT VIEW</button>
-            <button class="tab-btn" onclick="openTab(event, 'tab-update')">UPDATE VIEW</button>
-            <button class="tab-btn" onclick="openTab(event, 'tab-delete')">DELETE VIEW</button>
+            <button class="tab-btn active" onclick="openTab(event, 'tab-create')">1. CREATE</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-insert')">2. INSERT</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-update')">3. UPDATE</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-delete')">4. DELETE/DROP</button>
         </div>
 
         <div id="tab-create" class="tab-content active">
             <h2>การสร้างตารางเสมือน (CREATE VIEW)</h2>
+            <p>VIEW คือตารางสมมติที่เก็บคำสั่ง SELECT ไว้ เพื่อให้เรียกใช้งานข้อมูลที่ซับซ้อนได้ง่ายขึ้น</p>
             <div class="syntax-box">
                 <span class="keyword">CREATE VIEW</span> <span class="variable">view_name</span> <span class="keyword">AS</span><br>
                 <span class="keyword">SELECT</span> column1, column2 FROM table_name <span class="keyword">WHERE</span> condition;
             </div>
-            <p><strong>ตัวอย่าง:</strong> สร้าง View ชื่อ <code>it_staff</code> เพื่อดูเฉพาะพนักงานแผนก IT</p>
-            <table class="table-sim">
-                <tr><th>name</th><th>dept</th></tr>
-                <tr><td>Somsak</td><td>IT</td></tr>
-                <tr><td>Wichai</td><td>IT</td></tr>
-            </table>
         </div>
 
         <div id="tab-insert" class="tab-content">
             <h2>การเพิ่มข้อมูล (INSERT VIEW)</h2>
+            <p>เราสามารถ INSERT ข้อมูลผ่าน VIEW ได้ หาก VIEW นั้นดึงมาจากตารางหลักเพียงตารางเดียว</p>
             <div class="syntax-box">
-                <span class="keyword">INSERT INTO</span> <span class="variable">view_name</span> (columns) <span class="keyword">VALUES</span> (values);
+                <span class="keyword">INSERT INTO</span> <span class="variable">view_name</span> (col1, col2) <span class="keyword">VALUES</span> (val1, val2);
             </div>
-            <p>ข้อมูลจะถูกส่งไปยังตารางหลัก (Base Table) โดยอัตโนมัติ</p>
         </div>
 
         <div id="tab-update" class="tab-content">
             <h2>การแก้ไขข้อมูล (UPDATE VIEW)</h2>
             <div class="syntax-box">
-                <span class="keyword">UPDATE</span> <span class="variable">view_name</span> <span class="keyword">SET</span> col = val <span class="keyword">WHERE</span> condition;
+                <span class="keyword">UPDATE</span> <span class="variable">view_name</span> <span class="keyword">SET</span> column = value <span class="keyword">WHERE</span> condition;
             </div>
         </div>
 
         <div id="tab-delete" class="tab-content">
-            <h2>การลบข้อมูล/ตาราง (DELETE/DROP)</h2>
-            <div class="syntax-box">
-                <span class="keyword">DELETE FROM</span> <span class="variable">view_name</span> <span class="keyword">WHERE</span> condition;<br>
-                <span class="keyword">DROP VIEW</span> <span class="variable">view_name</span>;
-            </div>
+            <h2>การลบ (DELETE / DROP)</h2>
+            <p><b>DELETE:</b> ลบข้อมูลในตารางหลักผ่าน VIEW</p>
+            <p><b>DROP VIEW:</b> ลบตัว VIEW ออกจากระบบ (ไม่กระทบข้อมูลในตารางหลัก)</p>
         </div>
 
         <button class="btn btn-primary" onclick="startQuiz()" style="margin-top:20px;">
-            <i class="fas fa-play"></i> เริ่มทำแบบทดสอบ (10 ข้อ 100 คะแนน)
+            <i class="fas fa-terminal"></i> เข้าสู่โหมดปฏิบัติการ SQL (10 ภารกิจ)
         </button>
     </div>
 
     <div id="quiz-area" class="hidden">
         <div class="box">
             <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="color:var(--primary); margin:0;"><i class="fas fa-edit"></i> ข้อที่ <span id="q-number">1</span>/10</h2>
+                <h2 style="color:var(--primary); margin:0;"><i class="fas fa-code"></i> Mission <span id="q-number">1</span>/10</h2>
                 <div style="font-weight:bold; font-size: 1.2rem; color: var(--gold);">
-                    <i class="fas fa-star"></i> คะแนนสะสม: <span id="current-score">0</span>
+                    <i class="fas fa-star"></i> Score: <span id="current-score">0</span>
                 </div>
             </div>
 
             <div id="q-container">
-                <div class="quiz-item" id="item1">
-                    <p><strong>โจทย์:</strong> จงสร้าง VIEW ชื่อ <code>active_users</code> จากตาราง <code>users</code> โดยเลือกทุกคอลัมน์ที่ <code>status = 'active'</code></p>
-                    <textarea id="q1" placeholder="เช่น CREATE VIEW ... AS SELECT ..."></textarea>
-                    <button class="btn btn-success" onclick="checkAnswer(1, 'create view', 'active_users', 10)">ตรวจคำตอบ</button>
-                    <div id="fb1" class="feedback"></div>
+                <div id="question-text" style="font-size: 1.1rem; margin-bottom: 15px;"></div>
+                
+                <div id="table-preview" class="hidden">
+                    <p><small><i class="fas fa-table"></i> ข้อมูลที่ได้จากคำสั่งของคุณ:</small></p>
+                    <div id="simulated-result"></div>
                 </div>
 
-                <div class="quiz-item hidden" id="item2">
-                    <p><strong>โจทย์:</strong> จงเขียนคำสั่งเรียกดูข้อมูล <b>ทั้งหมด</b> จาก VIEW ที่ชื่อ <code>active_users</code></p>
-                    <textarea id="q2"></textarea>
-                    <button class="btn btn-success" onclick="checkAnswer(2, 'select', 'active_users', 10)">ตรวจคำตอบ</button>
-                    <div id="fb2"></div>
-                </div>
+                <textarea id="sql-input" placeholder="พิมพ์คำสั่ง SQL ที่นี่... (เช่น CREATE VIEW ...)"></textarea>
+                
+                <div id="feedback-msg" class="feedback"></div>
 
-                <div class="quiz-item hidden" id="item3">
-                    <p><strong>โจทย์:</strong> จงสร้าง VIEW ชื่อ <code>high_price</code> จากตาราง <code>products</code> เลือกทุกคอลัมน์ที่ <code>price > 1000</code></p>
-                    <textarea id="q3"></textarea>
-                    <button class="btn btn-success" onclick="checkAnswer(3, 'create view', 'high_price', 10)">ตรวจคำตอบ</button>
-                    <div id="fb3"></div>
-                </div>
+                <button id="run-btn" class="btn btn-success" onclick="processAnswer()">
+                    <i class="fas fa-play"></i> Run Command
+                </button>
 
-                <div class="quiz-item hidden" id="item4">
-                    <p><strong>โจทย์:</strong> จงเพิ่มข้อมูลชื่อ <code>'Notebook'</code> ราคา <code>25000</code> ลงใน VIEW <code>high_price</code> (สมมติมีคอลัมน์ name, price)</p>
-                    <textarea id="q4"></textarea>
-                    <button class="btn btn-success" onclick="checkAnswer(4, 'insert into', 'high_price', 10)">ตรวจคำตอบ</button>
-                    <div id="fb4"></div>
-                </div>
-
-                <div class="quiz-item hidden" id="item5">
-                    <p><strong>โจทย์:</strong> จงแก้ไขราคา (price) ใน VIEW <code>high_price</code> เป็น <code>1500</code> สำหรับสินค้าที่มี <code>id = 5</code></p>
-                    <textarea id="q5"></textarea>
-                    <button class="btn btn-success" onclick="checkAnswer(5, 'update', 'high_price', 10)">ตรวจคำตอบ</button>
-                    <div id="fb5"></div>
-                </div>
-
-                <div class="quiz-item hidden" id="item6">
-                    <p><strong>โจทย์:</strong> จงลบข้อมูลออกจาก VIEW <code>active_users</code> สำหรับผู้ใช้ที่มี <code>id = 10</code></p>
-                    <textarea id="q6"></textarea>
-                    <button class="btn btn-success" onclick="checkAnswer(6, 'delete from', 'active_users', 10)">ตรวจคำตอบ</button>
-                    <div id="fb6"></div>
-                </div>
-
-                <div class="quiz-item hidden" id="item7">
-                    <p><strong>โจทย์:</strong> หากต้องการลบตารางเสมือน <code>active_users</code> ออกจากฐานข้อมูล ต้องใช้คำสั่งใด</p>
-                    <textarea id="q7"></textarea>
-                    <button class="btn btn-success" onclick="checkAnswer(7, 'drop view', 'active_users', 10)">ตรวจคำตอบ</button>
-                    <div id="fb7"></div>
-                </div>
-
-                <div class="quiz-item hidden" id="item8">
-                    <p><strong>โจทย์:</strong> จงสร้าง VIEW ชื่อ <code>staff_list</code> โดยเลือกเฉพาะคอลัมน์ <code>name</code> จากตาราง <code>employees</code></p>
-                    <textarea id="q8"></textarea>
-                    <button class="btn btn-success" onclick="checkAnswer(8, 'create view', 'staff_list', 10)">ตรวจคำตอบ</button>
-                    <div id="fb8"></div>
-                </div>
-
-                <div class="quiz-item hidden" id="item9">
-                    <p><strong>โจทย์:</strong> จงเขียนคำสั่ง SELECT ข้อมูลจาก VIEW <code>staff_list</code> โดยเรียงชื่อตามตัวอักษร</p>
-                    <textarea id="q9"></textarea>
-                    <button class="btn btn-success" onclick="checkAnswer(9, 'select', 'staff_list', 10)">ตรวจคำตอบ</button>
-                    <div id="fb9"></div>
-                </div>
-
-                <div class="quiz-item hidden" id="item10">
-                    <p><strong>โจทย์:</strong> จงใช้คำสั่งลบตารางเสมือน <code>high_price</code> ออกจากระบบฐานข้อมูล</p>
-                    <textarea id="q10"></textarea>
-                    <button class="btn btn-success" onclick="checkAnswer(10, 'drop view', 'high_price', 10)">ตรวจคำตอบ</button>
-                    <div id="fb10"></div>
-                </div>
+                <button id="next-btn" class="btn btn-primary hidden" onclick="nextQuestion()" style="margin-top:20px;">
+                    Next Mission <i class="fas fa-arrow-right"></i>
+                </button>
+                
+                <button id="finish-btn" class="btn btn-primary hidden" onclick="showResults()" style="margin-top:20px; background: var(--accent);">
+                    <i class="fas fa-check-double"></i> ดูผลการเรียนทั้งหมด
+                </button>
             </div>
-
-            <button id="next-btn" class="btn btn-primary hidden" onclick="nextQuestion()" style="margin-top:20px;">
-                ข้อถัดไป <i class="fas fa-arrow-right"></i>
-            </button>
-            <button id="finish-btn" class="btn btn-primary hidden" onclick="showResults()" style="margin-top:20px; background: var(--accent);">
-                <i class="fas fa-check-double"></i> สรุปผลคะแนนรวม
-            </button>
         </div>
     </div>
 
     <div id="result-screen" class="hidden">
         <div class="box" style="text-align: center;">
-            <h2 style="color: var(--primary);"><i class="fas fa-award"></i> การทดสอบเสร็จสมบูรณ์</h2>
+            <h2 style="color: var(--primary);"><i class="fas fa-award"></i> Mission Accomplished!</h2>
             <div style="font-size: 5rem; color: var(--accent); font-weight: bold; margin: 10px 0;" id="final-score-val">0</div>
-            <p style="font-size: 1.2rem;">คุณทำคะแนนได้ยอดเยี่ยมมาก!</p>
+            <p style="font-size: 1.2rem;">ยินดีด้วย! คุณเชี่ยวชาญการใช้ SQL VIEW แล้ว</p>
         </div>
 
         <div class="box">
             <h2 style="text-align: center; color: var(--gold); margin-bottom: 20px;">
-                <i class="fas fa-trophy"></i> Classroom Leaderboard (ห้องเรียน)
+                <i class="fas fa-trophy"></i> Classroom Leaderboard
             </h2>
             <table class="leaderboard-table">
                 <thead>
-                    <tr>
-                        <th>อันดับ</th>
-                        <th>รายชื่อนักเรียน</th>
-                        <th>คะแนน</th>
-                    </tr>
+                    <tr><th>Rank</th><th>Name</th><th>Score</th></tr>
                 </thead>
                 <tbody id="leaderboard-body">
-                    <tr><td>1</td><td>เด็กชายสมชาย เรียนดี</td><td>100</td></tr>
-                    <tr class="highlight-row"><td>-</td><td>คุณ (You)</td><td id="user-rank-score">0</td></tr>
-                    <tr><td>2</td><td>เด็กหญิงวิภา ขยันเรียน</td><td>90</td></tr>
-                    <tr><td>3</td><td>เด็กชายมานะ อดทน</td><td>80</td></tr>
-                    <tr><td>4</td><td>เด็กหญิงปิติ ยินดี</td><td>70</td></tr>
-                </tbody>
+                    </tbody>
             </table>
             <button class="btn btn-primary" style="margin-top:30px;" onclick="location.reload()">
-                <i class="fas fa-redo"></i> กลับไปทบทวนบทเรียน
+                <i class="fas fa-redo"></i> กลับไปหน้าบทเรียน
             </button>
         </div>
     </div>
 </div>
 
 <script>
-    let currentQ = 1;
+    let currentQ = 0;
     let score = 0;
-    let answered = new Set();
+
+    const questions = [
+        {
+            task: "จงสร้าง VIEW ชื่อ <b>active_users</b> จากตาราง users โดยเลือกทุกคอลัมน์ที่ status = 'active'",
+            keywords: ["create view", "active_users", "as", "select", "from", "users", "where", "status", "active"],
+            table: "<tr><th>id</th><th>name</th><th>status</th></tr><tr><td>1</td><td>Somsak</td><td>active</td></tr><tr><td>2</td><td>Wichai</td><td>active</td></tr>"
+        },
+        {
+            task: "จงเขียนคำสั่งเรียกดูข้อมูล <b>ทั้งหมด</b> จาก VIEW ที่ชื่อ <b>active_users</b>",
+            keywords: ["select", "*", "from", "active_users"],
+            table: "<tr><th>id</th><th>name</th><th>status</th></tr><tr><td>1</td><td>Somsak</td><td>active</td></tr><tr><td>2</td><td>Wichai</td><td>active</td></tr>"
+        },
+        {
+            task: "จงสร้าง VIEW ชื่อ <b>high_price</b> จากตาราง products เลือกทุกคอลัมน์ที่ price > 1000",
+            keywords: ["create view", "high_price", "as", "select", "from", "products", "where", "price", "1000"],
+            table: "<tr><th>p_id</th><th>name</th><th>price</th></tr><tr><td>101</td><td>Monitor</td><td>4500</td></tr>"
+        },
+        {
+            task: "จงเพิ่มข้อมูลชื่อ 'Notebook' ราคา 25000 ลงใน VIEW <b>high_price</b> (คอลัมน์ name, price)",
+            keywords: ["insert into", "high_price", "name", "price", "values", "notebook", "25000"],
+            msg: "บันทึกข้อมูลเข้าสู่ตารางหลักผ่าน View สำเร็จ!"
+        },
+        {
+            task: "จงแก้ไขราคา (price) ใน VIEW <b>high_price</b> เป็น 1500 สำหรับสินค้าที่มี id = 5",
+            keywords: ["update", "high_price", "set", "price", "1500", "where", "id", "5"],
+            msg: "แก้ไขข้อมูลสำเร็จ! (1 row updated)"
+        },
+        {
+            task: "จงลบข้อมูลออกจาก VIEW <b>active_users</b> สำหรับผู้ใช้ที่มี id = 10",
+            keywords: ["delete from", "active_users", "where", "id", "10"],
+            msg: "ลบข้อมูลสำเร็จ! ข้อมูลในตาราง users จะถูกลบไปด้วย"
+        },
+        {
+            task: "หากต้องการลบตารางเสมือน <b>active_users</b> ออกจากฐานข้อมูล ต้องใช้คำสั่งใด",
+            keywords: ["drop view", "active_users"],
+            msg: "ลบ VIEW 'active_users' ออกจากระบบแล้ว"
+        },
+        {
+            task: "จงสร้าง VIEW ชื่อ <b>staff_list</b> โดยเลือกเฉพาะคอลัมน์ <b>name</b> จากตาราง employees",
+            keywords: ["create view", "staff_list", "as", "select", "name", "from", "employees"],
+            table: "<tr><th>name</th></tr><tr><td>John</td></tr><tr><td>Jane</td></tr>"
+        },
+        {
+            task: "จงเขียนคำสั่ง SELECT ข้อมูลจาก VIEW <b>staff_list</b> โดยเรียงชื่อ (ORDER BY name)",
+            keywords: ["select", "from", "staff_list", "order by", "name"],
+            table: "<tr><th>name</th></tr><tr><td>Jane</td></tr><tr><td>John</td></tr>"
+        },
+        {
+            task: "จงใช้คำสั่งลบตารางเสมือน <b>high_price</b> ออกจากระบบฐานข้อมูล",
+            keywords: ["drop view", "high_price"],
+            msg: "ลบ VIEW 'high_price' ออกจากระบบถาวร"
+        }
+    ];
 
     function openTab(evt, tabName) {
         let content = document.getElementsByClassName("tab-content");
@@ -298,52 +285,69 @@
     function startQuiz() {
         document.getElementById('lesson-area').classList.add('hidden');
         document.getElementById('quiz-area').classList.remove('hidden');
+        loadQuestion();
     }
 
-    function checkAnswer(id, k1, k2, pts) {
-        if(answered.has(id)) return;
-        const val = document.getElementById('q'+id).value.toLowerCase();
-        const fb = document.getElementById('fb'+id);
+    function loadQuestion() {
+        const q = questions[currentQ];
+        document.getElementById('q-number').innerText = currentQ + 1;
+        document.getElementById('question-text').innerHTML = q.task;
+        document.getElementById('sql-input').value = "";
+        document.getElementById('feedback-msg').className = "feedback";
+        document.getElementById('table-preview').classList.add('hidden');
+        document.getElementById('next-btn').classList.add('hidden');
+        document.getElementById('run-btn').classList.remove('hidden');
+    }
+
+    function processAnswer() {
+        const input = document.getElementById('sql-input').value.toLowerCase();
+        const feedback = document.getElementById('feedback-msg');
+        const q = questions[currentQ];
         
-        // ตรวจสอบ keyword สำคัญในประโยค SQL
-        if(val.includes(k1) && val.includes(k2)) {
-            score += pts;
-            fb.innerHTML = `<p style="color:var(--accent); font-weight:600; margin-top:10px;">
-                            <i class="fas fa-check-circle"></i> ถูกต้อง! รับไป ${pts} คะแนน</p>`;
+        // ตรวจสอบ Keywords ทั้งหมดที่ต้องมี
+        const isCorrect = q.keywords.every(k => input.includes(k.toLowerCase()));
+
+        if (isCorrect) {
+            score += 10;
             document.getElementById('current-score').innerText = score;
-            answered.add(id);
-            
-            if(currentQ < 10) {
+            feedback.innerHTML = `<i class="fas fa-check-circle"></i> <b>ถูกต้อง!</b> คำสั่ง SQL ทำงานสำเร็จ`;
+            feedback.className = "feedback correct";
+            document.getElementById('run-btn').classList.add('hidden');
+
+            // แสดงตารางจำลอง หรือข้อความ Success
+            if (q.table) {
+                document.getElementById('table-preview').classList.remove('hidden');
+                document.getElementById('simulated-result').innerHTML = `<table class="table-sim">${q.table}</table>`;
+            } else if (q.msg) {
+                feedback.innerHTML += `<br><small>${q.msg}</small>`;
+            }
+
+            if (currentQ < questions.length - 1) {
                 document.getElementById('next-btn').classList.remove('hidden');
             } else {
                 document.getElementById('finish-btn').classList.remove('hidden');
             }
+            
+            // Effect
+            confetti({ particleCount: 40, spread: 50, origin: { y: 0.8 } });
+
         } else {
-            fb.innerHTML = `<p style="color:#ef4444; font-weight:500; margin-top:10px;">
-                            <i class="fas fa-times-circle"></i> ไวยากรณ์ยังไม่ถูก ลองตรวจสอบชื่อ VIEW หรือคำสั่งหลักอีกครั้ง</p>`;
+            feedback.innerHTML = `<i class="fas fa-times-circle"></i> <b>ผิดพลาด:</b> ไวยากรณ์ไม่ครบถ้วน กรุณาตรวจสอบชื่อ VIEW และคีย์เวิร์ด SQL`;
+            feedback.className = "feedback wrong";
         }
     }
 
     function nextQuestion() {
-        document.getElementById('item' + currentQ).classList.add('hidden');
-        document.getElementById('next-btn').classList.add('hidden');
         currentQ++;
-        document.getElementById('q-number').innerText = currentQ;
-        document.getElementById('item' + currentQ).classList.remove('hidden');
+        loadQuestion();
     }
 
     function showResults() {
         document.getElementById('quiz-area').classList.add('hidden');
         document.getElementById('result-screen').classList.remove('hidden');
         document.getElementById('final-score-val').innerText = score;
-        document.getElementById('user-rank-score').innerText = score;
-        
-        // จัดลำดับ Leaderboard จำลอง
         updateLeaderboard();
-
-        if(score >= 80) {
-            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-        }
+        if(score >= 80) confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
     }
 
     function updateLeaderboard() {
@@ -352,22 +356,16 @@
             { name: "เด็กชายสมชาย เรียนดี", score: 100 },
             { name: "คุณ (You)", score: score, isUser: true },
             { name: "เด็กหญิงวิภา ขยันเรียน", score: 90 },
-            { name: "เด็กชายมานะ อดทน", score: 80 },
-            { name: "เด็กหญิงปิติ ยินดี", score: 70 }
+            { name: "เด็กชายมานะ อดทน", score: 80 }
         ];
-
-        // เรียงคะแนนจากมากไปน้อย
         students.sort((a, b) => b.score - a.score);
-
-        let html = "";
-        students.forEach((s, index) => {
-            html += `<tr class="${s.isUser ? 'highlight-row' : ''}">
-                        <td>${index + 1}</td>
-                        <td>${s.name}</td>
-                        <td>${s.score}</td>
-                     </tr>`;
-        });
-        board.innerHTML = html;
+        board.innerHTML = students.map((s, i) => `
+            <tr class="${s.isUser ? 'highlight-row' : ''}">
+                <td>${i + 1}</td>
+                <td>${s.name}</td>
+                <td>${s.score}</td>
+            </tr>
+        `).join('');
     }
 </script>
 </body>
