@@ -105,7 +105,6 @@
         .hidden { display: none; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ระบบจับเวลาและปุ่ม Reset */
         .timer-container {
             background: #fee2e2;
             color: #ef4444;
@@ -205,7 +204,7 @@
                 <div style="display:flex; align-items: center; gap: 15px;">
                     <h2 style="color:var(--primary); margin:0;"><i class="fas fa-code"></i> Mission <span id="q-number">1</span></h2>
                     <button class="btn-reset" onclick="confirmReset()">
-                        <i class="fas fa-sync-alt"></i> Reset คะแนน
+                        <i class="fas fa-sync-alt"></i> Reset ข้อนี้
                     </button>
                 </div>
                 
@@ -268,8 +267,15 @@
                 </thead>
                 <tbody id="leaderboard-body"></tbody>
             </table>
+            
             <button class="btn btn-primary" style="margin-top:30px;" onclick="location.reload()">
                 <i class="fas fa-redo"></i> กลับไปทบทวนบทเรียน
+            </button>
+        </div>
+
+        <div style="margin-top: 50px; border-top: 1px dashed #ccc; padding-top: 20px; text-align: center;">
+            <button class="btn-reset" onclick="adminResetScores()" style="padding: 10px 20px;">
+                <i class="fas fa-trash-alt"></i> ล้างคะแนนทั้งหมดในเครื่อง (เฉพาะครู)
             </button>
         </div>
     </div>
@@ -416,10 +422,7 @@
     }
 
     function confirmReset() {
-        if (confirm("ต้องการล้างคะแนนและเริ่มทำใหม่ตั้งแต่ข้อแรกหรือไม่?")) {
-            score = 0;
-            currentQ = 0;
-            document.getElementById('current-score').innerText = "0";
+        if (confirm("ต้องการล้างคำตอบในข้อนี้และเริ่มนับเวลาใหม่หรือไม่?")) {
             loadQuestion();
         }
     }
@@ -435,17 +438,34 @@
 
     function updateLeaderboard() {
         const board = document.getElementById('leaderboard-body');
-        const dummy = [
-            { no: "12", name: "สมชาย เรียนดี", score: 100 },
-            { no: studentData.no, name: studentData.name, score: score, isUser: true },
-            { no: "05", name: "วิภา ขยันเรียน", score: 90 }
-        ];
-        dummy.sort((a, b) => b.score - a.score);
-        board.innerHTML = dummy.map((s, i) => `
-            <tr class="${s.isUser ? 'highlight-row' : ''}">
+        let allScores = JSON.parse(localStorage.getItem('classroom_scores')) || [];
+        
+        // บันทึกเฉพาะเมื่อยังไม่ได้อยู่ในลิสต์ (ป้องกันการเบิ้ลคะแนนตอน Refresh)
+        const currentStudent = { no: studentData.no, name: studentData.name, score: score, timestamp: Date.now() };
+        allScores.push(currentStudent);
+        
+        localStorage.setItem('classroom_scores', JSON.stringify(allScores));
+        
+        allScores.sort((a, b) => b.score - a.score);
+        
+        board.innerHTML = allScores.slice(0, 10).map((s, i) => `
+            <tr class="${s.no === studentData.no && s.name === studentData.name ? 'highlight-row' : ''}">
                 <td>${i + 1}</td><td>${s.no}</td><td>${s.name}</td><td>${s.score}</td>
             </tr>
         `).join('');
+    }
+
+    function adminResetScores() {
+        const pin = prompt("กรุณากรอกรหัสผ่านเพื่อล้างคะแนนทั้งหมด:");
+        if (pin === "1234") { 
+            if (confirm("คุณครูยืนยันที่จะล้างคะแนน Leaderboard ทั้งหมดในเครื่องนี้ใช่หรือไม่?")) {
+                localStorage.removeItem('classroom_scores'); 
+                alert("ล้างข้อมูลคะแนนเรียบร้อยแล้วครับ");
+                location.reload();
+            }
+        } else if (pin !== null) {
+            alert("รหัสผ่านไม่ถูกต้องครับคุณครู");
+        }
     }
 </script>
 </body>
