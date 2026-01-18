@@ -29,7 +29,6 @@
         }
 
         .container { max-width: 900px; margin: auto; padding: 40px 20px; }
-
         .edu-header { text-align: center; margin-bottom: 30px; }
         .edu-header h1 { color: var(--primary); font-size: 2.2rem; margin: 0; }
 
@@ -111,7 +110,7 @@
         <p>บทเรียนโต้ตอบ: สร้างและจัดการตารางเสมือน โดย ครูนุช Smart Com</p>
     </div>
 
-  <div id="lesson-area" class="box">
+    <div id="lesson-area" class="box">
         <div class="tab-container">
             <button class="tab-btn active" onclick="openTab(event, 'tab-create')">VIEW TABLE</button>
             <button class="tab-btn" onclick="openTab(event, 'tab-insert')">INSERT VIEW</button>
@@ -121,97 +120,29 @@
 
         <div id="tab-create" class="tab-content active">
             <h2>1. รูปแบบคำสั่งการสร้าง VIEW</h2>
-            <p>VIEW คือตารางเสมือนที่สร้างจากคำสั่ง SELECT เพื่อช่วยให้การจัดการข้อมูลง่ายขึ้น</p>
-            
             <div class="syntax-box">
                 <span class="keyword">CREATE VIEW</span> <span class="variable">view_name</span> <span class="keyword">AS</span><br>
-                <span class="keyword">SELECT</span> column1, column2, ...<br>
-                <span class="keyword">FROM</span> table_name<br>
-                <span class="keyword">WHERE</span> condition;
+                <span class="keyword">SELECT</span> column1, column2, ... FROM table_name WHERE condition;
             </div>
-
-            <div style="margin-top:20px;">
-                <p><strong>ตัวอย่างการใช้งาน:</strong> สร้าง View เพื่อดูเฉพาะพนักงานแผนก IT</p>
-                <div class="syntax-box" style="border-left-color: var(--accent);">
-                    CREATE VIEW it_staff AS SELECT name, salary FROM employees WHERE dept = 'IT';
-                </div>
-                <p><strong>ผลลัพธ์ที่ได้:</strong></p>
-                <table class="table-sim">
-                    <tr><th>name</th><th>salary</th></tr>
-                    <tr><td>Somsak</td><td>45,000</td></tr>
-                    <tr><td>Wichai</td><td>38,000</td></tr>
-                </table>
-            </div>
+            <p><strong>ตัวอย่าง:</strong> <code>CREATE VIEW it_staff AS SELECT name, salary FROM employees WHERE dept = 'IT';</code></p>
         </div>
-
         <div id="tab-insert" class="tab-content">
             <h2>2. การเพิ่มข้อมูลผ่าน VIEW</h2>
-            <p>เราสามารถเพิ่มข้อมูลลงในตารางหลักผ่านทาง VIEW ได้หาก VIEW นั้นประกอบด้วยคอลัมน์ที่จำเป็นครบถ้วน</p>
-            
             <div class="syntax-box">
-                <span class="keyword">INSERT INTO</span> <span class="variable">view_name</span> (column1, column2)<br>
-                <span class="keyword">VALUES</span> (value1, value2);
-            </div>
-
-            <div style="margin-top:20px;">
-                <p><strong>ตัวอย่างการใช้งาน:</strong> เพิ่มพนักงานใหม่ผ่าน it_staff</p>
-                <div class="syntax-box" style="border-left-color: var(--accent);">
-                    INSERT INTO it_staff (name, salary) VALUES ('Jane', 42000);
-                </div>
-                <p><strong>ผลลัพธ์ในตาราง (รวมข้อมูลใหม่):</strong></p>
-                <table class="table-sim">
-                    <tr><th>name</th><th>salary</th></tr>
-                    <tr><td>...</td><td>...</td></tr>
-                    <tr><td>Jane</td><td>42,000</td></tr>
-                </table>
-            </div>
+               <span class="keyword">INSERT INTO</span> <span class="variable">view_name</span> (col1, col2) <span class="keyword">VALUES</span> (val1, val2);
+           </div>
         </div>
-
         <div id="tab-update" class="tab-content">
             <h2>3. การแก้ไขข้อมูลผ่าน VIEW</h2>
-            <p>การแก้ไขข้อมูลใน VIEW จะส่งผลกระทบโดยตรงไปยังข้อมูลที่อยู่ในตารางหลัก</p>
-            
             <div class="syntax-box">
-                <span class="keyword">UPDATE</span> <span class="variable">view_name</span><br>
-                <span class="keyword">SET</span> column1 = value1<br>
-                <span class="keyword">WHERE</span> condition;
-            </div>
-
-            <div style="margin-top:20px;">
-                <p><strong>ตัวอย่างการใช้งาน:</strong> ปรับเงินเดือนพนักงานชื่อ Somsak ผ่าน View</p>
-                <div class="syntax-box" style="border-left-color: var(--accent);">
-                    UPDATE it_staff SET salary = 50000 WHERE name = 'Somsak';
-                </div>
-                <p><strong>ผลลัพธ์หลังการแก้ไข:</strong></p>
-                <table class="table-sim">
-                    <tr><th>name</th><th>salary</th></tr>
-                    <tr><td>Somsak</td><td><b style="color:var(--accent)">50,000</b></td></tr>
-                    <tr><td>Wichai</td><td>38,000</td></tr>
-                </table>
-            </div>
+               <span class="keyword">UPDATE</span> <span class="variable">view_name</span> <span class="keyword">SET</span> col = val <span class="keyword">WHERE</span> condition;
+           </div>
         </div>
-
         <div id="tab-delete" class="tab-content">
             <h2>4. การลบข้อมูลผ่าน VIEW</h2>
-            <p>ใช้ลบข้อมูลในตารางหลักที่ตรงตามเงื่อนไขที่ VIEW มองเห็น</p>
-            
             <div class="syntax-box">
-                <span class="keyword">DELETE FROM</span> <span class="variable">view_name</span><br>
-                <span class="keyword">WHERE</span> condition;
-            </div>
-
-            <div style="margin-top:20px;">
-                <p><strong>ตัวอย่างการใช้งาน:</strong> ลบข้อมูลพนักงานชื่อ Wichai ออกจากระบบ</p>
-                <div class="syntax-box" style="border-left-color: var(--accent);">
-                    DELETE FROM it_staff WHERE name = 'Wichai';
-                </div>
-                <p><strong>ผลลัพธ์หลังการลบ:</strong></p>
-                <table class="table-sim">
-                    <tr><th>name</th><th>salary</th></tr>
-                    <tr><td>Somsak</td><td>45,000</td></tr>
-                    <tr><td colspan="2" style="text-align:center; color:gray;">(ข้อมูล Wichai ถูกลบแล้ว)</td></tr>
-                </table>
-            </div>
+               <span class="keyword">DELETE FROM</span> <span class="variable">view_name</span> <span class="keyword">WHERE</span> condition;
+           </div>
         </div>
 
         <button class="btn btn-primary" onclick="showLogin()" style="margin-top:20px;">
@@ -366,15 +297,9 @@
     function startQuiz() {
         const name = document.getElementById('student-name').value.trim();
         const no = document.getElementById('student-no').value.trim();
-        
-        if (!name || !no) {
-            alert("กรุณากรอกชื่อและเลขที่ก่อนเริ่มครับ");
-            return;
-        }
-        
+        if (!name || !no) { alert("กรุณากรอกชื่อและเลขที่ก่อนเริ่มครับ"); return; }
         studentData.name = name;
         studentData.no = no;
-        
         document.getElementById('display-user').innerText = name;
         document.getElementById('display-no').innerText = no;
         document.getElementById('login-area').classList.add('hidden');
@@ -387,32 +312,32 @@
         document.getElementById('q-number').innerText = currentQ + 1;
         document.getElementById('question-text').innerHTML = q.task;
         document.getElementById('sql-input').value = "";
-        document.getElementById('feedback-msg').style.display = "none";
+        document.getElementById('feedback-msg').style.display = "none"; // ปิด Feedback ก่อน
         document.getElementById('table-preview').classList.add('hidden');
         document.getElementById('next-btn').classList.add('hidden');
         document.getElementById('run-btn').classList.remove('hidden');
+        document.getElementById('finish-btn').classList.add('hidden');
     }
 
-    // ฟังก์ชันช่วยทำความสะอาดข้อความ SQL เพื่อเปรียบเทียบ
     function cleanSQL(str) {
         return str.toLowerCase()
-                  .replace(/[\n\r]/g, ' ')      // ลบขึ้นบรรทัดใหม่
-                  .replace(/\s+/g, ' ')         // ยุบช่องว่างที่ซ้อนกันเหลือ 1
-                  .replace(/;\s*$/, '')         // ลบเครื่องหมายเซมิโคลอนท้ายประโยค (ถ้ามี)
+                  .replace(/[\n\r]/g, ' ')
+                  .replace(/\s+/g, ' ')
+                  .replace(/;\s*$/, '')
                   .trim();
     }
 
     function processAnswer() {
-        const input = cleanSQL(document.getElementById('sql-input').value);
+        const inputRaw = document.getElementById('sql-input').value;
+        const input = cleanSQL(inputRaw);
         const q = questions[currentQ];
         const correctAnswer = cleanSQL(q.answer);
-        
         const feedback = document.getElementById('feedback-msg');
 
-        // ตรวจสอบว่าคำตอบตรงกันไหม
+        feedback.style.display = "block"; // แสดง Feedback
+
         if (input === correctAnswer) {
             score += 10;
-            document.getElementById('current-score').innerText = score;
             feedback.innerHTML = `<i class="fas fa-check-circle"></i> <b>ถูกต้อง!</b> คำสั่ง SQL ทำงานสำเร็จ`;
             feedback.className = "feedback correct";
             document.getElementById('run-btn').classList.add('hidden');
@@ -431,7 +356,7 @@
             }
             confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
         } else {
-            feedback.innerHTML = `<i class="fas fa-times-circle"></i> <b>คำสั่งไม่ถูกต้อง:</b> ตรวจสอบ Syntax, ชื่อตาราง/View หรือเงื่อนไขอีกครั้ง`;
+            feedback.innerHTML = `<i class="fas fa-times-circle"></i> <b>คำสั่งไม่ถูกต้อง:</b> ตรวจสอบ Syntax หรือชื่อ View อีกครั้งนะครับ`;
             feedback.className = "feedback wrong";
         }
     }
@@ -445,7 +370,7 @@
         document.getElementById('quiz-area').classList.add('hidden');
         document.getElementById('result-screen').classList.remove('hidden');
         document.getElementById('final-score-val').innerText = score;
-        document.getElementById('congrats-text').innerText = `คุณ ${studentData.name} ทำคะแนนได้ยอดเยี่ยมมาก!`;
+        document.getElementById('congrats-text').innerText = `ยินดีด้วยคุณ ${studentData.name} ทำภารกิจสำเร็จ!`;
         updateLeaderboard();
         if(score >= 80) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
     }
