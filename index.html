@@ -104,6 +104,49 @@
 
         .hidden { display: none; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+/* วางต่อท้าย CSS เดิม ก่อนถึงเครื่องหมาย </style> */
+    .timer-container {
+        background: #fee2e2;
+        color: #ef4444;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid #fecaca;
+    }
+    .timer-bar {
+        height: 4px;
+        background: #ef4444;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        transition: width 1s linear;
+    }
+    .quiz-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        background: #f8fafc;
+        padding: 10px;
+        border-radius: 10px;
+        position: relative;
+        overflow: hidden;
+    }
+    .btn-reset {
+        background: #f1f5f9;
+        color: #64748b;
+        font-size: 0.8rem;
+        padding: 5px 10px;
+        border: 1px solid #cbd5e1;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+    .btn-reset:hover { background: #e2e8f0; color: #ef4444; }
+        
     </style>
 </head>
 <body>
@@ -236,15 +279,50 @@
         </div>
     </div>
 
-    <div id="quiz-area" class="hidden">
+ <div id="quiz-area" class="hidden">
         <div class="box">
-            <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="color:var(--primary); margin:0;"><i class="fas fa-code"></i> Mission <span id="q-number">1</span>/10</h2>
-                <div style="text-align: right;">
-                    <div style="font-weight:bold;"><span id="display-user"></span> (เลขที่ <span id="display-no"></span>)</div>
-                    <div class="score-badge">คะแนนสะสม: <span id="current-score">0</span></div>
+            <div class="quiz-controls">
+                <div style="display:flex; align-items: center; gap: 15px;">
+                    <h2 style="color:var(--primary); margin:0;"><i class="fas fa-code"></i> Mission <span id="q-number">1</span></h2>
+                    <button class="btn-reset" onclick="confirmReset()">
+                        <i class="fas fa-sync-alt"></i> Reset คะแนน
+                    </button>
                 </div>
+                
+                <div style="display:flex; gap: 10px; align-items: center;">
+                    <div class="timer-container" id="timer-display">
+                        <i class="fas fa-clock"></i> <span id="time-left">30</span>s
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-weight:bold; font-size: 0.9rem;"><span id="display-user"></span></div>
+                        <div class="score-badge">Score: <span id="current-score">0</span></div>
+                    </div>
+                </div>
+                <div id="timer-bar" class="timer-bar"></div>
             </div>
+
+            <div id="q-container">
+                <div id="question-text" style="font-size: 1.1rem; margin-bottom: 15px; background: #fffbeb; padding: 15px; border-radius: 8px; border-left: 5px solid var(--gold);"></div>
+                <textarea id="sql-input" placeholder="พิมพ์คำสั่ง SQL ที่นี่..."></textarea>
+                <div id="feedback-msg" class="feedback"></div>
+
+                <div style="display: flex; gap: 10px;">
+                    <button id="run-btn" class="btn btn-success" style="flex: 2;" onclick="processAnswer()">
+                        <i class="fas fa-play"></i> Run Command
+                    </button>
+                    <button id="skip-btn" class="btn btn-secondary" style="flex: 1;" onclick="nextQuestion()">
+                        ข้าม <i class="fas fa-forward"></i>
+                    </button>
+                </div>
+                <button id="next-btn" class="btn btn-primary hidden" onclick="nextQuestion()" style="margin-top:20px;">
+                    Next Mission <i class="fas fa-arrow-right"></i>
+                </button>
+                <button id="finish-btn" class="btn btn-primary hidden" onclick="showResults()" style="margin-top:20px; background: var(--accent);">
+                    <i class="fas fa-check-double"></i> ดูสรุปคะแนน
+                </button>
+            </div>
+        </div>
+    </div>
 
             <div id="q-container">
                 <div id="question-text" style="font-size: 1.1rem; margin-bottom: 15px; background: #fffbeb; padding: 15px; border-radius: 8px; border-left: 5px solid var(--gold);"></div>
@@ -422,6 +500,96 @@
             </tr>
         `).join('');
     }
+
+    let timeLeft = 30;
+    let timerInterval;
+
+    function startTimer() {
+        clearInterval(timerInterval);
+        timeLeft = 30;
+        updateTimerDisplay();
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            updateTimerDisplay();
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                timeOut();
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        document.getElementById('time-left').innerText = timeLeft;
+        const barWidth = (timeLeft / 30) * 100;
+        document.getElementById('timer-bar').style.width = barWidth + "%";
+    }
+
+    function timeOut() {
+        const feedback = document.getElementById('feedback-msg');
+        feedback.style.display = "block";
+        feedback.innerHTML = `<i class="fas fa-hourglass-end"></i> <b>หมดเวลา!</b> ข้อนี้ไม่ได้คะแนน`;
+        feedback.className = "feedback wrong";
+        document.getElementById('sql-input').disabled = true;
+        document.getElementById('run-btn').classList.add('hidden');
+        document.getElementById('skip-btn').classList.add('hidden');
+        if (currentQ < questions.length - 1) {
+            document.getElementById('next-btn').classList.remove('hidden');
+        } else {
+            document.getElementById('finish-btn').classList.remove('hidden');
+        }
+    }
+
+    function confirmReset() {
+        if (confirm("ต้องการล้างคะแนนและเริ่มทำใหม่ตั้งแต่ข้อแรกหรือไม่?")) {
+            score = 0;
+            currentQ = 0;
+            document.getElementById('current-score').innerText = "0";
+            loadQuestion();
+        }
+    }
+
+    // แก้ไขฟังก์ชันเดิมให้รองรับ Timer
+    function loadQuestion() {
+        const q = questions[currentQ];
+        document.getElementById('q-number').innerText = currentQ + 1;
+        document.getElementById('question-text').innerHTML = q.task;
+        document.getElementById('sql-input').value = "";
+        document.getElementById('sql-input').disabled = false;
+        document.getElementById('feedback-msg').style.display = "none";
+        document.getElementById('next-btn').classList.add('hidden');
+        document.getElementById('run-btn').classList.remove('hidden');
+        document.getElementById('skip-btn').classList.remove('hidden');
+        startTimer();
+    }
+
+    function processAnswer() {
+        clearInterval(timerInterval);
+        const input = cleanSQL(document.getElementById('sql-input').value);
+        const q = questions[currentQ];
+        const feedback = document.getElementById('feedback-msg');
+        feedback.style.display = "block";
+
+        if (input === cleanSQL(q.answer)) {
+            score += 10;
+            document.getElementById('current-score').innerText = score;
+            feedback.innerHTML = `<i class="fas fa-check-circle"></i> <b>ถูกต้อง!</b> ได้รับ 10 คะแนน`;
+            feedback.className = "feedback correct";
+            confetti({ particleCount: 30, spread: 50, origin: { y: 0.8 } });
+        } else {
+            feedback.innerHTML = `<i class="fas fa-times-circle"></i> <b>ผิด!</b> คำตอบคือ: ${q.answer}`;
+            feedback.className = "feedback wrong";
+        }
+
+        document.getElementById('sql-input').disabled = true;
+        document.getElementById('run-btn').classList.add('hidden');
+        document.getElementById('skip-btn').classList.add('hidden');
+        if (currentQ < questions.length - 1) {
+            document.getElementById('next-btn').classList.remove('hidden');
+        } else {
+            document.getElementById('finish-btn').classList.remove('hidden');
+        }
+    }
+    
 </script>
 </body>
 </html>
