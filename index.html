@@ -29,6 +29,7 @@
         }
 
         .container { max-width: 900px; margin: auto; padding: 40px 20px; }
+
         .edu-header { text-align: center; margin-bottom: 30px; }
         .edu-header h1 { color: var(--primary); font-size: 2.2rem; margin: 0; }
 
@@ -80,6 +81,7 @@
         }
         .btn-primary { background: var(--primary); color: white; width: 100%; }
         .btn-success { background: var(--accent); color: white; margin-top: 10px; }
+        .btn-secondary { background: var(--secondary); color: white; margin-top: 10px; }
 
         input[type="text"], textarea {
             width: 100%; padding: 12px; border-radius: 8px;
@@ -97,6 +99,8 @@
         .leaderboard-table th { background: var(--primary); color: white; padding: 15px; }
         .leaderboard-table td { padding: 15px; border-bottom: 1px solid var(--border); text-align: center; }
         .highlight-row { background: #f0fdf4; font-weight: bold; }
+
+        .score-badge { background: var(--gold); color: white; padding: 2px 10px; border-radius: 20px; font-size: 0.9rem; }
 
         .hidden { display: none; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -120,30 +124,15 @@
 
         <div id="tab-create" class="tab-content active">
             <h2>1. รูปแบบคำสั่งการสร้าง VIEW</h2>
+            <p>VIEW คือตารางเสมือนที่สร้างจากคำสั่ง SELECT เพื่อช่วยให้การจัดการข้อมูลง่ายขึ้น</p>
             <div class="syntax-box">
                 <span class="keyword">CREATE VIEW</span> <span class="variable">view_name</span> <span class="keyword">AS</span><br>
                 <span class="keyword">SELECT</span> column1, column2, ... FROM table_name WHERE condition;
             </div>
-            <p><strong>ตัวอย่าง:</strong> <code>CREATE VIEW it_staff AS SELECT name, salary FROM employees WHERE dept = 'IT';</code></p>
         </div>
-        <div id="tab-insert" class="tab-content">
-            <h2>2. การเพิ่มข้อมูลผ่าน VIEW</h2>
-            <div class="syntax-box">
-               <span class="keyword">INSERT INTO</span> <span class="variable">view_name</span> (col1, col2) <span class="keyword">VALUES</span> (val1, val2);
-           </div>
-        </div>
-        <div id="tab-update" class="tab-content">
-            <h2>3. การแก้ไขข้อมูลผ่าน VIEW</h2>
-            <div class="syntax-box">
-               <span class="keyword">UPDATE</span> <span class="variable">view_name</span> <span class="keyword">SET</span> col = val <span class="keyword">WHERE</span> condition;
-           </div>
-        </div>
-        <div id="tab-delete" class="tab-content">
-            <h2>4. การลบข้อมูลผ่าน VIEW</h2>
-            <div class="syntax-box">
-               <span class="keyword">DELETE FROM</span> <span class="variable">view_name</span> <span class="keyword">WHERE</span> condition;
-           </div>
-        </div>
+        <div id="tab-insert" class="tab-content"><h2>2. การเพิ่มข้อมูล</h2><p>ใช้คำสั่ง INSERT INTO ชื่อ View ได้เหมือนตารางปกติ</p></div>
+        <div id="tab-update" class="tab-content"><h2>3. การแก้ไขข้อมูล</h2><p>ใช้คำสั่ง UPDATE ชื่อ View ข้อมูลในตารางหลักจะเปลี่ยนตาม</p></div>
+        <div id="tab-delete" class="tab-content"><h2>4. การลบข้อมูล</h2><p>ใช้คำสั่ง DELETE FROM ชื่อ View เพื่อลบข้อมูลออกจากตารางหลัก</p></div>
 
         <button class="btn btn-primary" onclick="showLogin()" style="margin-top:20px;">
             <i class="fas fa-edit"></i> เตรียมตัวทำแบบทดสอบ
@@ -167,8 +156,9 @@
         <div class="box">
             <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h2 style="color:var(--primary); margin:0;"><i class="fas fa-code"></i> Mission <span id="q-number">1</span>/10</h2>
-                <div style="font-weight:bold; font-size: 1.1rem;">
-                    <span id="display-user"></span> (เลขที่ <span id="display-no"></span>)
+                <div style="text-align: right;">
+                    <div style="font-weight:bold;"><span id="display-user"></span> (เลขที่ <span id="display-no"></span>)</div>
+                    <div class="score-badge">คะแนนสะสม: <span id="current-score">0</span></div>
                 </div>
             </div>
 
@@ -183,16 +173,21 @@
                 <textarea id="sql-input" placeholder="พิมพ์คำสั่ง SQL ที่นี่..."></textarea>
                 <div id="feedback-msg" class="feedback"></div>
 
-                <button id="run-btn" class="btn btn-success" onclick="processAnswer()">
-                    <i class="fas fa-play"></i> Run Command
-                </button>
+                <div style="display: flex; gap: 10px;">
+                    <button id="run-btn" class="btn btn-success" style="flex: 2;" onclick="processAnswer()">
+                        <i class="fas fa-play"></i> Run Command
+                    </button>
+                    <button id="skip-btn" class="btn btn-secondary" style="flex: 1;" onclick="nextQuestion()">
+                        ข้ามข้อนี้ <i class="fas fa-forward"></i>
+                    </button>
+                </div>
 
                 <button id="next-btn" class="btn btn-primary hidden" onclick="nextQuestion()" style="margin-top:20px;">
                     Next Mission <i class="fas fa-arrow-right"></i>
                 </button>
                 
                 <button id="finish-btn" class="btn btn-primary hidden" onclick="showResults()" style="margin-top:20px; background: var(--accent);">
-                    <i class="fas fa-check-double"></i> สรุปคะแนนทั้งหมด
+                    <i class="fas fa-check-double"></i> ดูสรุปคะแนน
                 </button>
             </div>
         </div>
@@ -200,7 +195,7 @@
 
     <div id="result-screen" class="hidden">
         <div class="box" style="text-align: center;">
-            <h2 style="color: var(--primary);"><i class="fas fa-award"></i> การทดสอบเสร็จสมบูรณ์</h2>
+            <h2 style="color: var(--primary);"><i class="fas fa-award"></i> สรุปผลการทดสอบ</h2>
             <div style="font-size: 5rem; color: var(--accent); font-weight: bold; margin: 10px 0;" id="final-score-val">0</div>
             <p id="congrats-text" style="font-size: 1.2rem;"></p>
         </div>
@@ -228,56 +223,16 @@
     let studentData = { name: "", no: "" };
 
     const questions = [
-        {
-            task: "จงสร้าง VIEW ชื่อ <b>active_users</b> จากตาราง <b>users</b> โดยเลือกทุกคอลัมน์ที่ status = 'active'",
-            answer: "CREATE VIEW active_users AS SELECT * FROM users WHERE status = 'active';",
-            table: "<tr><th>id</th><th>name</th><th>status</th></tr><tr><td>1</td><td>Somsak</td><td>active</td></tr>"
-        },
-        {
-            task: "จงเขียนคำสั่งเรียกดูข้อมูลทั้งหมดจาก VIEW ที่ชื่อ <b>active_users</b>",
-            answer: "SELECT * FROM active_users;",
-            table: "<tr><th>id</th><th>name</th><th>status</th></tr><tr><td>1</td><td>Somsak</td><td>active</td></tr>"
-        },
-        {
-            task: "จงสร้าง VIEW ชื่อ <b>high_price</b> จากตาราง <b>products</b> เลือกทุกคอลัมน์ที่ price > 1000",
-            answer: "CREATE VIEW high_price AS SELECT * FROM products WHERE price > 1000;",
-            table: "<tr><th>p_id</th><th>name</th><th>price</th></tr><tr><td>101</td><td>Monitor</td><td>4500</td></tr>"
-        },
-        {
-            task: "จงเพิ่มข้อมูลชื่อ <b>'Notebook'</b> ราคา <b>25000</b> ลงใน VIEW ชื่อ <b>high_price</b> (คอลัมน์ name, price)",
-            answer: "INSERT INTO high_price (name, price) VALUES ('Notebook', 25000);",
-            msg: "เพิ่มข้อมูล 'Notebook' สำเร็จ!"
-        },
-        {
-            task: "จงแก้ไขราคา (price) ใน VIEW <b>high_price</b> เป็น <b>1500</b> สำหรับสินค้าที่มี <b>id = 5</b>",
-            answer: "UPDATE high_price SET price = 1500 WHERE id = 5;",
-            msg: "อัปเดตราคาเป็น 1500 สำเร็จ!"
-        },
-        {
-            task: "จงลบข้อมูลออกจาก VIEW <b>active_users</b> สำหรับผู้ใช้ที่มี <b>id = 10</b>",
-            answer: "DELETE FROM active_users WHERE id = 10;",
-            msg: "ลบข้อมูล ID 10 สำเร็จ!"
-        },
-        {
-            task: "หากต้องการลบตารางเสมือน <b>active_users</b> ออกจากระบบฐานข้อมูล ต้องใช้คำสั่งใด",
-            answer: "DROP VIEW active_users;",
-            msg: "ลบ View ออกจากระบบสำเร็จ!"
-        },
-        {
-            task: "จงสร้าง VIEW ชื่อ <b>staff_list</b> โดยเลือกเฉพาะคอลัมน์ <b>name</b> จากตาราง <b>employees</b>",
-            answer: "CREATE VIEW staff_list AS SELECT name FROM employees;",
-            table: "<tr><th>name</th></tr><tr><td>John</td></tr>"
-        },
-        {
-            task: "จงเขียนคำสั่งเรียกดูข้อมูลจาก VIEW <b>staff_list</b> โดยเรียงชื่อตามตัวอักษร (ORDER BY name)",
-            answer: "SELECT * FROM staff_list ORDER BY name;",
-            table: "<tr><th>name</th></tr><tr><td>John</td></tr>"
-        },
-        {
-            task: "จงใช้คำสั่งลบตารางเสมือน <b>high_price</b> ออกจากระบบฐานข้อมูล",
-            answer: "DROP VIEW high_price;",
-            msg: "ลบ View high_price สำเร็จ!"
-        }
+        { task: "จงสร้าง VIEW ชื่อ <b>active_users</b> จากตาราง <b>users</b> โดยเลือกทุกคอลัมน์ที่ status = 'active'", answer: "CREATE VIEW active_users AS SELECT * FROM users WHERE status = 'active';", table: "<tr><th>id</th><th>name</th><th>status</th></tr><tr><td>1</td><td>Somsak</td><td>active</td></tr>" },
+        { task: "จงเขียนคำสั่งเรียกดูข้อมูลทั้งหมดจาก VIEW ที่ชื่อ <b>active_users</b>", answer: "SELECT * FROM active_users;", table: "<tr><th>id</th><th>name</th><th>status</th></tr><tr><td>1</td><td>Somsak</td><td>active</td></tr>" },
+        { task: "จงสร้าง VIEW ชื่อ <b>high_price</b> จากตาราง <b>products</b> เลือกทุกคอลัมน์ที่ price > 1000", answer: "CREATE VIEW high_price AS SELECT * FROM products WHERE price > 1000;", table: "<tr><th>p_id</th><th>name</th><th>price</th></tr><tr><td>101</td><td>Monitor</td><td>4500</td></tr>" },
+        { task: "จงเพิ่มข้อมูลชื่อ <b>'Notebook'</b> ราคา <b>25000</b> ลงใน VIEW ชื่อ <b>high_price</b>", answer: "INSERT INTO high_price (name, price) VALUES ('Notebook', 25000);", msg: "เพิ่มข้อมูลสำเร็จ!" },
+        { task: "จงแก้ไขราคาใน VIEW <b>high_price</b> เป็น <b>1500</b> สำหรับสินค้าที่มี <b>id = 5</b>", answer: "UPDATE high_price SET price = 1500 WHERE id = 5;", msg: "อัปเดตราคาสำเร็จ!" },
+        { task: "จงลบข้อมูลออกจาก VIEW <b>active_users</b> สำหรับผู้ใช้ที่มี <b>id = 10</b>", answer: "DELETE FROM active_users WHERE id = 10;", msg: "ลบข้อมูลสำเร็จ!" },
+        { task: "หากต้องการลบตารางเสมือน <b>active_users</b> ออกจากระบบ ต้องใช้คำสั่งใด", answer: "DROP VIEW active_users;", msg: "ลบ View สำเร็จ!" },
+        { task: "จงสร้าง VIEW ชื่อ <b>staff_list</b> โดยเลือกเฉพาะคอลัมน์ <b>name</b> จาก <b>employees</b>", answer: "CREATE VIEW staff_list AS SELECT name FROM employees;", table: "<tr><th>name</th></tr><tr><td>John</td></tr>" },
+        { task: "จงเรียกดูข้อมูลจาก VIEW <b>staff_list</b> โดยเรียงชื่อตามตัวอักษร", answer: "SELECT * FROM staff_list ORDER BY name;", table: "<tr><th>name</th></tr><tr><td>John</td></tr>" },
+        { task: "จงใช้คำสั่งลบตารางเสมือน <b>high_price</b> ออกจากระบบ", answer: "DROP VIEW high_price;", msg: "ลบ View สำเร็จ!" }
     ];
 
     function openTab(evt, tabName) {
@@ -297,9 +252,8 @@
     function startQuiz() {
         const name = document.getElementById('student-name').value.trim();
         const no = document.getElementById('student-no').value.trim();
-        if (!name || !no) { alert("กรุณากรอกชื่อและเลขที่ก่อนเริ่มครับ"); return; }
-        studentData.name = name;
-        studentData.no = no;
+        if (!name || !no) { alert("กรุณากรอกชื่อและเลขที่ครับ"); return; }
+        studentData.name = name; studentData.no = no;
         document.getElementById('display-user').innerText = name;
         document.getElementById('display-no').innerText = no;
         document.getElementById('login-area').classList.add('hidden');
@@ -312,84 +266,75 @@
         document.getElementById('q-number').innerText = currentQ + 1;
         document.getElementById('question-text').innerHTML = q.task;
         document.getElementById('sql-input').value = "";
-        document.getElementById('feedback-msg').style.display = "none"; // ปิด Feedback ก่อน
+        document.getElementById('sql-input').disabled = false;
+        document.getElementById('feedback-msg').style.display = "none";
         document.getElementById('table-preview').classList.add('hidden');
         document.getElementById('next-btn').classList.add('hidden');
         document.getElementById('run-btn').classList.remove('hidden');
-        document.getElementById('finish-btn').classList.add('hidden');
+        document.getElementById('skip-btn').classList.remove('hidden');
     }
 
     function cleanSQL(str) {
-        return str.toLowerCase()
-                  .replace(/[\n\r]/g, ' ')
-                  .replace(/\s+/g, ' ')
-                  .replace(/;\s*$/, '')
-                  .trim();
+        return str.toLowerCase().replace(/[\n\r]/g, ' ').replace(/\s+/g, ' ').replace(/;\s*$/, '').trim();
     }
 
     function processAnswer() {
-        const inputRaw = document.getElementById('sql-input').value;
-        const input = cleanSQL(inputRaw);
+        const input = cleanSQL(document.getElementById('sql-input').value);
         const q = questions[currentQ];
-        const correctAnswer = cleanSQL(q.answer);
         const feedback = document.getElementById('feedback-msg');
+        feedback.style.display = "block";
 
-        feedback.style.display = "block"; // แสดง Feedback
-
-        if (input === correctAnswer) {
+        if (input === cleanSQL(q.answer)) {
             score += 10;
-            feedback.innerHTML = `<i class="fas fa-check-circle"></i> <b>ถูกต้อง!</b> คำสั่ง SQL ทำงานสำเร็จ`;
+            document.getElementById('current-score').innerText = score;
+            feedback.innerHTML = `<i class="fas fa-check-circle"></i> <b>ถูกต้อง!</b> ได้รับ 10 คะแนน`;
             feedback.className = "feedback correct";
-            document.getElementById('run-btn').classList.add('hidden');
-
-            if (q.table) {
-                document.getElementById('table-preview').classList.remove('hidden');
-                document.getElementById('simulated-result').innerHTML = `<table class="table-sim">${q.table}</table>`;
-            } else if (q.msg) {
-                feedback.innerHTML += `<br><small>${q.msg}</small>`;
-            }
-
-            if (currentQ < questions.length - 1) {
-                document.getElementById('next-btn').classList.remove('hidden');
-            } else {
-                document.getElementById('finish-btn').classList.remove('hidden');
-            }
-            confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
+            confetti({ particleCount: 30, spread: 50, origin: { y: 0.8 } });
         } else {
-            feedback.innerHTML = `<i class="fas fa-times-circle"></i> <b>คำสั่งไม่ถูกต้อง:</b> ตรวจสอบ Syntax หรือชื่อ View อีกครั้งนะครับ`;
+            feedback.innerHTML = `<i class="fas fa-times-circle"></i> <b>ผิดพลาด!</b> ข้อนี้ไม่ได้คะแนน (คำตอบคือ: ${q.answer})`;
             feedback.className = "feedback wrong";
+        }
+
+        document.getElementById('sql-input').disabled = true;
+        document.getElementById('run-btn').classList.add('hidden');
+        document.getElementById('skip-btn').classList.add('hidden');
+
+        if (currentQ < questions.length - 1) {
+            document.getElementById('next-btn').classList.remove('hidden');
+        } else {
+            document.getElementById('finish-btn').classList.remove('hidden');
         }
     }
 
     function nextQuestion() {
         currentQ++;
-        loadQuestion();
+        if (currentQ < questions.length) {
+            loadQuestion();
+        } else {
+            showResults();
+        }
     }
 
     function showResults() {
         document.getElementById('quiz-area').classList.add('hidden');
         document.getElementById('result-screen').classList.remove('hidden');
         document.getElementById('final-score-val').innerText = score;
-        document.getElementById('congrats-text').innerText = `ยินดีด้วยคุณ ${studentData.name} ทำภารกิจสำเร็จ!`;
+        document.getElementById('congrats-text').innerText = `คุณ ${studentData.name} ทำคะแนนรวมได้ยอดเยี่ยม!`;
         updateLeaderboard();
-        if(score >= 80) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        if(score >= 70) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
     }
 
     function updateLeaderboard() {
         const board = document.getElementById('leaderboard-body');
-        const students = [
-            { no: "12", name: "เด็กชายสมชาย เรียนดี", score: 100 },
+        const dummy = [
+            { no: "12", name: "สมชาย เรียนดี", score: 100 },
             { no: studentData.no, name: studentData.name, score: score, isUser: true },
-            { no: "05", name: "เด็กหญิงวิภา ขยันเรียน", score: 90 },
-            { no: "22", name: "เด็กชายมานะ อดทน", score: 80 }
+            { no: "05", name: "วิภา ขยันเรียน", score: 90 }
         ];
-        students.sort((a, b) => b.score - a.score);
-        board.innerHTML = students.map((s, i) => `
+        dummy.sort((a, b) => b.score - a.score);
+        board.innerHTML = dummy.map((s, i) => `
             <tr class="${s.isUser ? 'highlight-row' : ''}">
-                <td>${i + 1}</td>
-                <td>${s.no}</td>
-                <td>${s.name}</td>
-                <td>${s.score}</td>
+                <td>${i + 1}</td><td>${s.no}</td><td>${s.name}</td><td>${s.score}</td>
             </tr>
         `).join('');
     }
