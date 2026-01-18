@@ -1,144 +1,374 @@
-<!DOCTYPE html><html lang="th">
+<!DOCTYPE html>
+<html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <title>SQL Skill Test</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
-  <style>
-    body { font-family: system-ui, sans-serif; margin: 20px; background:#f7f7f7; }
-    h1,h2 { color:#1f2937; }
-    .box { background:white; padding:20px; margin-bottom:20px; border-radius:12px; box-shadow:0 2px 6px rgba(0,0,0,.08); }
-    textarea { width:100%; height:120px; }
-    button { padding:8px 16px; border-radius:8px; border:none; background:#2563eb; color:white; }
-    .hidden { display:none; }
-    .success { color:green; }
-    .error { color:red; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL VIEW Master Class - T.Nuch Smart Com</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --primary: #1e40af;
+            --secondary: #64748b;
+            --accent: #10b981;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text: #1e293b;
+            --syntax-bg: #1e293b;
+            --border: #e2e8f0;
+            --gold: #f59e0b;
+        }
+
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .container { max-width: 900px; margin: auto; padding: 40px 20px; }
+
+        .edu-header { text-align: center; margin-bottom: 30px; }
+        .edu-header h1 { color: var(--primary); font-size: 2.2rem; margin: 0; }
+
+        .box {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Tab System */
+        .tab-container {
+            display: flex; gap: 5px; margin-bottom: 20px;
+            background: #e2e8f0; padding: 5px; border-radius: 10px;
+        }
+        .tab-btn {
+            flex: 1; padding: 10px; border: none; background: none;
+            font-family: 'Prompt'; cursor: pointer; border-radius: 8px;
+            transition: 0.3s; color: var(--secondary); font-weight: 500;
+        }
+        .tab-btn.active { background: var(--primary); color: white; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        .syntax-box {
+            background: var(--syntax-bg); padding: 20px; border-radius: 10px;
+            border-left: 5px solid var(--primary); font-family: 'Consolas', monospace;
+            color: #e2e8f0; line-height: 1.5; margin: 15px 0;
+        }
+
+        .keyword { color: #f472b6; font-weight: bold; }
+        .variable { color: #60a5fa; }
+
+        .table-sim {
+            width: 100%; border-collapse: collapse; margin: 15px 0;
+            background: white; border-radius: 8px; overflow: hidden;
+            font-size: 0.9rem;
+        }
+        .table-sim th { background: #f8fafc; color: var(--primary); padding: 12px; text-align: left; border-bottom: 2px solid var(--border); }
+        .table-sim td { padding: 12px; border-bottom: 1px solid var(--border); }
+
+        .btn {
+            padding: 12px 25px; border-radius: 8px; border: none;
+            font-family: 'Prompt'; font-weight: 600; cursor: pointer; transition: 0.3s;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-primary { background: var(--primary); color: white; width: 100%; }
+        .btn-success { background: var(--accent); color: white; margin-top: 10px; }
+
+        textarea {
+            width: 100%; height: 90px; padding: 15px; border-radius: 8px;
+            border: 2px solid var(--border); margin: 10px 0; font-family: 'Consolas', monospace; 
+            box-sizing: border-box; font-size: 1rem; outline: none;
+        }
+        textarea:focus { border-color: var(--primary); }
+
+        .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .leaderboard-table th { background: var(--primary); color: white; padding: 15px; }
+        .leaderboard-table td { padding: 15px; border-bottom: 1px solid var(--border); text-align: center; }
+        .highlight-row { background: #f0fdf4; font-weight: bold; }
+
+        .hidden { display: none; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
-<body><h1>📘 SQL Skill Test</h1>
-<p>เว็บไซต์สอนและสอบปฏิบัติ SQL (VIEW & Subquery)  | สอนและสอบปฏิบัติ | T.nuch Smart ComClass | สอนคอมพิวเตอร์อย่างเข้าใจ ในแบบของครูนุช</p><div class="box">
-  <h2>🎥 วิดีโอสอนก่อนทำแบบทดสอบ</h2>
-  <p>นักเรียนควรรับชมวิดีโอนี้ก่อนเริ่มทำแบบทดสอบ เพื่อทบทวนแนวคิดและตัวอย่างการเขียน SQL</p>
-<div style="position:relative;padding-top:56.25%;margin-bottom:15px;">
-  <iframe 
-    src="https://www.youtube.com/embed/_tocAYU6jl0"
-    title="SQL VIEW & Subquery"
-    style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:12px;"
-    frameborder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    allowfullscreen>
-  </iframe>
+<body>
+
+<div class="container">
+    <div class="edu-header">
+        <h1><i class="fas fa-database"></i> SQL VIEW Master Class</h1>
+        <p>หลักสูตรจัดการฐานข้อมูลออนไลน์ โดย ครูนุช Smart Com</p>
+    </div>
+
+    <div id="lesson-area" class="box">
+        <div class="tab-container">
+            <button class="tab-btn active" onclick="openTab(event, 'tab-create')">VIEW TABLE</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-insert')">INSERT VIEW</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-update')">UPDATE VIEW</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-delete')">DELETE VIEW</button>
+        </div>
+
+        <div id="tab-create" class="tab-content active">
+            <h2>การสร้างตารางเสมือน (CREATE VIEW)</h2>
+            <div class="syntax-box">
+                <span class="keyword">CREATE VIEW</span> <span class="variable">view_name</span> <span class="keyword">AS</span><br>
+                <span class="keyword">SELECT</span> column1, column2 FROM table_name <span class="keyword">WHERE</span> condition;
+            </div>
+            <p><strong>ตัวอย่าง:</strong> สร้าง View ชื่อ <code>it_staff</code> เพื่อดูเฉพาะพนักงานแผนก IT</p>
+            <table class="table-sim">
+                <tr><th>name</th><th>dept</th></tr>
+                <tr><td>Somsak</td><td>IT</td></tr>
+                <tr><td>Wichai</td><td>IT</td></tr>
+            </table>
+        </div>
+
+        <div id="tab-insert" class="tab-content">
+            <h2>การเพิ่มข้อมูล (INSERT VIEW)</h2>
+            <div class="syntax-box">
+                <span class="keyword">INSERT INTO</span> <span class="variable">view_name</span> (columns) <span class="keyword">VALUES</span> (values);
+            </div>
+            <p>ข้อมูลจะถูกส่งไปยังตารางหลัก (Base Table) โดยอัตโนมัติ</p>
+        </div>
+
+        <div id="tab-update" class="tab-content">
+            <h2>การแก้ไขข้อมูล (UPDATE VIEW)</h2>
+            <div class="syntax-box">
+                <span class="keyword">UPDATE</span> <span class="variable">view_name</span> <span class="keyword">SET</span> col = val <span class="keyword">WHERE</span> condition;
+            </div>
+        </div>
+
+        <div id="tab-delete" class="tab-content">
+            <h2>การลบข้อมูล/ตาราง (DELETE/DROP)</h2>
+            <div class="syntax-box">
+                <span class="keyword">DELETE FROM</span> <span class="variable">view_name</span> <span class="keyword">WHERE</span> condition;<br>
+                <span class="keyword">DROP VIEW</span> <span class="variable">view_name</span>;
+            </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="startQuiz()" style="margin-top:20px;">
+            <i class="fas fa-play"></i> เริ่มทำแบบทดสอบ (10 ข้อ 100 คะแนน)
+        </button>
+    </div>
+
+    <div id="quiz-area" class="hidden">
+        <div class="box">
+            <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="color:var(--primary); margin:0;"><i class="fas fa-edit"></i> ข้อที่ <span id="q-number">1</span>/10</h2>
+                <div style="font-weight:bold; font-size: 1.2rem; color: var(--gold);">
+                    <i class="fas fa-star"></i> คะแนนสะสม: <span id="current-score">0</span>
+                </div>
+            </div>
+
+            <div id="q-container">
+                <div class="quiz-item" id="item1">
+                    <p><strong>โจทย์:</strong> จงสร้าง VIEW ชื่อ <code>active_users</code> จากตาราง <code>users</code> โดยเลือกทุกคอลัมน์ที่ <code>status = 'active'</code></p>
+                    <textarea id="q1" placeholder="เช่น CREATE VIEW ... AS SELECT ..."></textarea>
+                    <button class="btn btn-success" onclick="checkAnswer(1, 'create view', 'active_users', 10)">ตรวจคำตอบ</button>
+                    <div id="fb1" class="feedback"></div>
+                </div>
+
+                <div class="quiz-item hidden" id="item2">
+                    <p><strong>โจทย์:</strong> จงเขียนคำสั่งเรียกดูข้อมูล <b>ทั้งหมด</b> จาก VIEW ที่ชื่อ <code>active_users</code></p>
+                    <textarea id="q2"></textarea>
+                    <button class="btn btn-success" onclick="checkAnswer(2, 'select', 'active_users', 10)">ตรวจคำตอบ</button>
+                    <div id="fb2"></div>
+                </div>
+
+                <div class="quiz-item hidden" id="item3">
+                    <p><strong>โจทย์:</strong> จงสร้าง VIEW ชื่อ <code>high_price</code> จากตาราง <code>products</code> เลือกทุกคอลัมน์ที่ <code>price > 1000</code></p>
+                    <textarea id="q3"></textarea>
+                    <button class="btn btn-success" onclick="checkAnswer(3, 'create view', 'high_price', 10)">ตรวจคำตอบ</button>
+                    <div id="fb3"></div>
+                </div>
+
+                <div class="quiz-item hidden" id="item4">
+                    <p><strong>โจทย์:</strong> จงเพิ่มข้อมูลชื่อ <code>'Notebook'</code> ราคา <code>25000</code> ลงใน VIEW <code>high_price</code> (สมมติมีคอลัมน์ name, price)</p>
+                    <textarea id="q4"></textarea>
+                    <button class="btn btn-success" onclick="checkAnswer(4, 'insert into', 'high_price', 10)">ตรวจคำตอบ</button>
+                    <div id="fb4"></div>
+                </div>
+
+                <div class="quiz-item hidden" id="item5">
+                    <p><strong>โจทย์:</strong> จงแก้ไขราคา (price) ใน VIEW <code>high_price</code> เป็น <code>1500</code> สำหรับสินค้าที่มี <code>id = 5</code></p>
+                    <textarea id="q5"></textarea>
+                    <button class="btn btn-success" onclick="checkAnswer(5, 'update', 'high_price', 10)">ตรวจคำตอบ</button>
+                    <div id="fb5"></div>
+                </div>
+
+                <div class="quiz-item hidden" id="item6">
+                    <p><strong>โจทย์:</strong> จงลบข้อมูลออกจาก VIEW <code>active_users</code> สำหรับผู้ใช้ที่มี <code>id = 10</code></p>
+                    <textarea id="q6"></textarea>
+                    <button class="btn btn-success" onclick="checkAnswer(6, 'delete from', 'active_users', 10)">ตรวจคำตอบ</button>
+                    <div id="fb6"></div>
+                </div>
+
+                <div class="quiz-item hidden" id="item7">
+                    <p><strong>โจทย์:</strong> หากต้องการลบตารางเสมือน <code>active_users</code> ออกจากฐานข้อมูล ต้องใช้คำสั่งใด</p>
+                    <textarea id="q7"></textarea>
+                    <button class="btn btn-success" onclick="checkAnswer(7, 'drop view', 'active_users', 10)">ตรวจคำตอบ</button>
+                    <div id="fb7"></div>
+                </div>
+
+                <div class="quiz-item hidden" id="item8">
+                    <p><strong>โจทย์:</strong> จงสร้าง VIEW ชื่อ <code>staff_list</code> โดยเลือกเฉพาะคอลัมน์ <code>name</code> จากตาราง <code>employees</code></p>
+                    <textarea id="q8"></textarea>
+                    <button class="btn btn-success" onclick="checkAnswer(8, 'create view', 'staff_list', 10)">ตรวจคำตอบ</button>
+                    <div id="fb8"></div>
+                </div>
+
+                <div class="quiz-item hidden" id="item9">
+                    <p><strong>โจทย์:</strong> จงเขียนคำสั่ง SELECT ข้อมูลจาก VIEW <code>staff_list</code> โดยเรียงชื่อตามตัวอักษร</p>
+                    <textarea id="q9"></textarea>
+                    <button class="btn btn-success" onclick="checkAnswer(9, 'select', 'staff_list', 10)">ตรวจคำตอบ</button>
+                    <div id="fb9"></div>
+                </div>
+
+                <div class="quiz-item hidden" id="item10">
+                    <p><strong>โจทย์:</strong> จงใช้คำสั่งลบตารางเสมือน <code>high_price</code> ออกจากระบบฐานข้อมูล</p>
+                    <textarea id="q10"></textarea>
+                    <button class="btn btn-success" onclick="checkAnswer(10, 'drop view', 'high_price', 10)">ตรวจคำตอบ</button>
+                    <div id="fb10"></div>
+                </div>
+            </div>
+
+            <button id="next-btn" class="btn btn-primary hidden" onclick="nextQuestion()" style="margin-top:20px;">
+                ข้อถัดไป <i class="fas fa-arrow-right"></i>
+            </button>
+            <button id="finish-btn" class="btn btn-primary hidden" onclick="showResults()" style="margin-top:20px; background: var(--accent);">
+                <i class="fas fa-check-double"></i> สรุปผลคะแนนรวม
+            </button>
+        </div>
+    </div>
+
+    <div id="result-screen" class="hidden">
+        <div class="box" style="text-align: center;">
+            <h2 style="color: var(--primary);"><i class="fas fa-award"></i> การทดสอบเสร็จสมบูรณ์</h2>
+            <div style="font-size: 5rem; color: var(--accent); font-weight: bold; margin: 10px 0;" id="final-score-val">0</div>
+            <p style="font-size: 1.2rem;">คุณทำคะแนนได้ยอดเยี่ยมมาก!</p>
+        </div>
+
+        <div class="box">
+            <h2 style="text-align: center; color: var(--gold); margin-bottom: 20px;">
+                <i class="fas fa-trophy"></i> Classroom Leaderboard (ห้องเรียน)
+            </h2>
+            <table class="leaderboard-table">
+                <thead>
+                    <tr>
+                        <th>อันดับ</th>
+                        <th>รายชื่อนักเรียน</th>
+                        <th>คะแนน</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboard-body">
+                    <tr><td>1</td><td>เด็กชายสมชาย เรียนดี</td><td>100</td></tr>
+                    <tr class="highlight-row"><td>-</td><td>คุณ (You)</td><td id="user-rank-score">0</td></tr>
+                    <tr><td>2</td><td>เด็กหญิงวิภา ขยันเรียน</td><td>90</td></tr>
+                    <tr><td>3</td><td>เด็กชายมานะ อดทน</td><td>80</td></tr>
+                    <tr><td>4</td><td>เด็กหญิงปิติ ยินดี</td><td>70</td></tr>
+                </tbody>
+            </table>
+            <button class="btn btn-primary" style="margin-top:30px;" onclick="location.reload()">
+                <i class="fas fa-redo"></i> กลับไปทบทวนบทเรียน
+            </button>
+        </div>
+    </div>
 </div>
 
-<div class="box">
-<section>
-<h2>SQL VIEW คืออะไร?</h2>
-<p>VIEW คือ Virtual Table ที่ได้จากคำสั่ง SELECT ใช้เพื่อลดความซับซ้อนของ Query และเพิ่มความปลอดภัย</p>
-<pre>
-CREATE VIEW view_sales AS
-SELECT region, SUM(amount) total
-FROM sales
-GROUP BY region;
-</pre>
-</section>
-</div>
+<script>
+    let currentQ = 1;
+    let score = 0;
+    let answered = new Set();
 
-  
-</div><div class="box">
-  <h2>📖 วิธีทำแบบทดสอบปฏิบัติ</h2>
-  <ol>
-    <li>กรอก <b>ชื่อนักเรียน</b> ให้ถูกต้อง</li>
-    <li>เลือกโหมด <b>โหมดเรียน</b> (ดูเฉลย) หรือ <b>โหมดสอบ</b> (ไม่มีเฉลย)</li>
-    <li>กดปุ่ม <b>เริ่มต้น</b></li>
-    <li>อ่านโจทย์แต่ละข้ออย่างละเอียด</li>
-    <li>พิมพ์คำสั่ง SQL ลงในช่องว่าง</li>
-    <li>กด <b>ตรวจคำตอบ</b> เพื่อประเมินผล</li>
-    <li>ระบบจะตรวจสอบและให้คะแนนอัตโนมัติ</li>
-    <li>เมื่อทำครบ กด <b>ส่งข้อสอบ</b> เพื่อบันทึกคะแนน</li>
-  </ol>
-  <p><b>หมายเหตุ:</b> โหมดสอบจะมีการจับเวลา เมื่อหมดเวลาระบบจะส่งข้อสอบให้อัตโนมัติ</p>
-</div><div class="box">
-  <label>👤 ชื่อนักเรียน: <input id="student" /></label>
-  <select id="mode">
-    <option value="learn">โหมดเรียน</option>
-    <option value="exam">โหมดสอบ</option>
-  </select>
-  <button onclick="start()">เริ่มต้น</button>
-  <button onclick="resetAll()" style="background:#dc2626;">ล้างข้อมูลทั้งหมด</button>
-</div><div id="content" class="hidden">
-  <div class="box">
-    ⏱ เวลา: <span id="timer">--:--</span>
-  </div>  <div class="box">
-    <h2>ข้อ 1 : สร้าง VIEW</h2>
-    <p>จงเขียน SQL เพื่อสร้าง VIEW ชื่อ <b>cpu_view</b> จากตาราง product เฉพาะ category = 'CPU'</p>
-    <textarea id="q1"></textarea>
-    <button onclick="checkQ1()">ตรวจคำตอบ</button>
-    <p id="r1"></p>
-    <div id="a1" class="hidden">
-      <pre>CREATE VIEW cpu_view AS SELECT * FROM product WHERE category='CPU';</pre>
-    </div>
-  </div>  <div class="box">
-    <h2>ข้อ 2 : Subquery</h2>
-    <p>แสดงสินค้าที่ราคามากกว่าราคาเฉลี่ยทั้งหมด</p>
-    <textarea id="q2"></textarea>
-    <button onclick="checkQ2()">ตรวจคำตอบ</button>
-    <p id="r2"></p>
-    <div id="a2" class="hidden">
-      <pre>SELECT * FROM product WHERE price > (SELECT AVG(price) FROM product);</pre>
-    </div>
-  </div>  <div class="box">
-    <h2>📊 คะแนนรวม</h2>
-    <p id="score">0</p>
-    <button onclick="finish()">ส่งข้อสอบ</button>
-  </div>
-</div><script>
-let score = 0;
-let time = 900; // 15 นาที
-let timer;
+    function openTab(evt, tabName) {
+        let content = document.getElementsByClassName("tab-content");
+        for (let i = 0; i < content.length; i++) content[i].classList.remove("active");
+        let btns = document.getElementsByClassName("tab-btn");
+        for (let i = 0; i < btns.length; i++) btns[i].classList.remove("active");
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
 
-function start(){
-  if(!student.value){ alert('กรอกชื่อ'); return; }
-  content.classList.remove('hidden');
-  if(mode.value === 'exam'){
-    timer = setInterval(()=>{
-      time--;
-      timerEl();
-      if(time<=0) finish();
-    },1000);
-  }
-}
+    function startQuiz() {
+        document.getElementById('lesson-area').classList.add('hidden');
+        document.getElementById('quiz-area').classList.remove('hidden');
+    }
 
-function timerEl(){
-  timerText = Math.floor(time/60)+":"+(time%60).toString().padStart(2,'0');
-  document.getElementById('timer').innerText = timerText;
-}
+    function checkAnswer(id, k1, k2, pts) {
+        if(answered.has(id)) return;
+        const val = document.getElementById('q'+id).value.toLowerCase();
+        const fb = document.getElementById('fb'+id);
+        
+        // ตรวจสอบ keyword สำคัญในประโยค SQL
+        if(val.includes(k1) && val.includes(k2)) {
+            score += pts;
+            fb.innerHTML = `<p style="color:var(--accent); font-weight:600; margin-top:10px;">
+                            <i class="fas fa-check-circle"></i> ถูกต้อง! รับไป ${pts} คะแนน</p>`;
+            document.getElementById('current-score').innerText = score;
+            answered.add(id);
+            
+            if(currentQ < 10) {
+                document.getElementById('next-btn').classList.remove('hidden');
+            } else {
+                document.getElementById('finish-btn').classList.remove('hidden');
+            }
+        } else {
+            fb.innerHTML = `<p style="color:#ef4444; font-weight:500; margin-top:10px;">
+                            <i class="fas fa-times-circle"></i> ไวยากรณ์ยังไม่ถูก ลองตรวจสอบชื่อ VIEW หรือคำสั่งหลักอีกครั้ง</p>`;
+        }
+    }
 
-function checkQ1(){
-  let sql = q1.value.toLowerCase();
-  if(sql.includes('create view') && sql.includes('cpu')){
-    score += 20;
-    r1.innerHTML = '<span class="success">✔ ถูกต้อง</span>';
-  } else r1.innerHTML = '<span class="error">✘ ยังไม่ถูก</span>';
-  scoreEl();
-  if(mode.value==='learn') a1.classList.remove('hidden');
-}
+    function nextQuestion() {
+        document.getElementById('item' + currentQ).classList.add('hidden');
+        document.getElementById('next-btn').classList.add('hidden');
+        currentQ++;
+        document.getElementById('q-number').innerText = currentQ;
+        document.getElementById('item' + currentQ).classList.remove('hidden');
+    }
 
-function checkQ2(){
-  let sql = q2.value.toLowerCase();
-  if(sql.includes('avg') && sql.includes('select')){
-    score += 20;
-    r2.innerHTML = '<span class="success">✔ ถูกต้อง</span>';
-  } else r2.innerHTML = '<span class="error">✘ ยังไม่ถูก</span>';
-  scoreEl();
-  if(mode.value==='learn') a2.classList.remove('hidden');
-}
+    function showResults() {
+        document.getElementById('quiz-area').classList.add('hidden');
+        document.getElementById('result-screen').classList.remove('hidden');
+        document.getElementById('final-score-val').innerText = score;
+        document.getElementById('user-rank-score').innerText = score;
+        
+        // จัดลำดับ Leaderboard จำลอง
+        updateLeaderboard();
 
-function scoreEl(){ document.getElementById('score').innerText = score; }
+        if(score >= 80) {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        }
+    }
 
-function finish(){
-  clearInterval(timer);
-  localStorage.setItem(student.value, score);
-  alert('บันทึกคะแนนแล้ว: '+score);
-}
-</script></body>
-</html> 
+    function updateLeaderboard() {
+        const board = document.getElementById('leaderboard-body');
+        const students = [
+            { name: "เด็กชายสมชาย เรียนดี", score: 100 },
+            { name: "คุณ (You)", score: score, isUser: true },
+            { name: "เด็กหญิงวิภา ขยันเรียน", score: 90 },
+            { name: "เด็กชายมานะ อดทน", score: 80 },
+            { name: "เด็กหญิงปิติ ยินดี", score: 70 }
+        ];
+
+        // เรียงคะแนนจากมากไปน้อย
+        students.sort((a, b) => b.score - a.score);
+
+        let html = "";
+        students.forEach((s, index) => {
+            html += `<tr class="${s.isUser ? 'highlight-row' : ''}">
+                        <td>${index + 1}</td>
+                        <td>${s.name}</td>
+                        <td>${s.score}</td>
+                     </tr>`;
+        });
+        board.innerHTML = html;
+    }
+</script>
+</body>
+</html>
