@@ -104,49 +104,49 @@
 
         .hidden { display: none; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-/* วางต่อท้าย CSS เดิม ก่อนถึงเครื่องหมาย </style> */
-    .timer-container {
-        background: #fee2e2;
-        color: #ef4444;
-        padding: 5px 15px;
-        border-radius: 20px;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        border: 1px solid #fecaca;
-    }
-    .timer-bar {
-        height: 4px;
-        background: #ef4444;
-        width: 100%;
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        transition: width 1s linear;
-    }
-    .quiz-controls {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        background: #f8fafc;
-        padding: 10px;
-        border-radius: 10px;
-        position: relative;
-        overflow: hidden;
-    }
-    .btn-reset {
-        background: #f1f5f9;
-        color: #64748b;
-        font-size: 0.8rem;
-        padding: 5px 10px;
-        border: 1px solid #cbd5e1;
-        cursor: pointer;
-        border-radius: 5px;
-    }
-    .btn-reset:hover { background: #e2e8f0; color: #ef4444; }
-        
+
+        /* ระบบจับเวลาและปุ่ม Reset */
+        .timer-container {
+            background: #fee2e2;
+            color: #ef4444;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid #fecaca;
+        }
+        .timer-bar {
+            height: 4px;
+            background: #ef4444;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            transition: width 1s linear;
+        }
+        .quiz-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: #f8fafc;
+            padding: 10px;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-reset {
+            background: #f1f5f9;
+            color: #64748b;
+            font-size: 0.8rem;
+            padding: 5px 10px;
+            border: 1px solid #cbd5e1;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .btn-reset:hover { background: #e2e8f0; color: #ef4444; }
     </style>
 </head>
 <body>
@@ -154,10 +154,10 @@
 <div class="container">
     <div class="edu-header">
         <h1><i class="fas fa-database"></i> SQL VIEW Master Class</h1>
-        <p>บทเรียนโต้ตอบ: สร้างและจัดการตารางเสมือน โดย ครูนุช Smart Com|สอนคอมพิวเตอร์อย่างเข้าใจ ในแบบของครูนุช</p>
+        <p>บทเรียนโต้ตอบ: สร้างและจัดการตารางเสมือน โดย ครูนุช Smart Com</p>
     </div>
 
-  <div id="lesson-area" class="box">
+    <div id="lesson-area" class="box">
         <div class="tab-container">
             <button class="tab-btn active" onclick="openTab(event, 'tab-create')">VIEW TABLE</button>
             <button class="tab-btn" onclick="openTab(event, 'tab-insert')">INSERT VIEW</button>
@@ -168,99 +168,19 @@
         <div id="tab-create" class="tab-content active">
             <h2>1. รูปแบบคำสั่งการสร้าง VIEW</h2>
             <p>VIEW คือตารางเสมือนที่สร้างจากคำสั่ง SELECT เพื่อช่วยให้การจัดการข้อมูลง่ายขึ้น</p>
-            
             <div class="syntax-box">
                 <span class="keyword">CREATE VIEW</span> <span class="variable">view_name</span> <span class="keyword">AS</span><br>
                 <span class="keyword">SELECT</span> column1, column2, ...<br>
                 <span class="keyword">FROM</span> table_name<br>
                 <span class="keyword">WHERE</span> condition;
             </div>
-
             <div style="margin-top:20px;">
-                <p><strong>ตัวอย่างการใช้งาน:</strong> สร้าง View เพื่อดูเฉพาะพนักงานแผนก IT</p>
+                <p><strong>ตัวอย่าง:</strong> สร้าง View พนักงานแผนก IT</p>
                 <div class="syntax-box" style="border-left-color: var(--accent);">
                     CREATE VIEW it_staff AS SELECT name, salary FROM employees WHERE dept = 'IT';
                 </div>
-                <p><strong>ผลลัพธ์ที่ได้:</strong></p>
-                <table class="table-sim">
-                    <tr><th>name</th><th>salary</th></tr>
-                    <tr><td>Somsak</td><td>45,000</td></tr>
-                    <tr><td>Wichai</td><td>38,000</td></tr>
-                </table>
             </div>
         </div>
-
-        <div id="tab-insert" class="tab-content">
-            <h2>2. การเพิ่มข้อมูลผ่าน VIEW</h2>
-            <p>เราสามารถเพิ่มข้อมูลลงในตารางหลักผ่านทาง VIEW ได้หาก VIEW นั้นประกอบด้วยคอลัมน์ที่จำเป็นครบถ้วน</p>
-            
-            <div class="syntax-box">
-                <span class="keyword">INSERT INTO</span> <span class="variable">view_name</span> (column1, column2)<br>
-                <span class="keyword">VALUES</span> (value1, value2);
-            </div>
-
-            <div style="margin-top:20px;">
-                <p><strong>ตัวอย่างการใช้งาน:</strong> เพิ่มพนักงานใหม่ผ่าน it_staff</p>
-                <div class="syntax-box" style="border-left-color: var(--accent);">
-                    INSERT INTO it_staff (name, salary) VALUES ('Jane', 42000);
-                </div>
-                <p><strong>ผลลัพธ์ในตาราง (รวมข้อมูลใหม่):</strong></p>
-                <table class="table-sim">
-                    <tr><th>name</th><th>salary</th></tr>
-                    <tr><td>...</td><td>...</td></tr>
-                    <tr><td>Jane</td><td>42,000</td></tr>
-                </table>
-            </div>
-        </div>
-
-        <div id="tab-update" class="tab-content">
-            <h2>3. การแก้ไขข้อมูลผ่าน VIEW</h2>
-            <p>การแก้ไขข้อมูลใน VIEW จะส่งผลกระทบโดยตรงไปยังข้อมูลที่อยู่ในตารางหลัก</p>
-            
-            <div class="syntax-box">
-                <span class="keyword">UPDATE</span> <span class="variable">view_name</span><br>
-                <span class="keyword">SET</span> column1 = value1<br>
-                <span class="keyword">WHERE</span> condition;
-            </div>
-
-            <div style="margin-top:20px;">
-                <p><strong>ตัวอย่างการใช้งาน:</strong> ปรับเงินเดือนพนักงานชื่อ Somsak ผ่าน View</p>
-                <div class="syntax-box" style="border-left-color: var(--accent);">
-                    UPDATE it_staff SET salary = 50000 WHERE name = 'Somsak';
-                </div>
-                <p><strong>ผลลัพธ์หลังการแก้ไข:</strong></p>
-                <table class="table-sim">
-                    <tr><th>name</th><th>salary</th></tr>
-                    <tr><td>Somsak</td><td><b style="color:var(--accent)">50,000</b></td></tr>
-                    <tr><td>Wichai</td><td>38,000</td></tr>
-                </table>
-            </div>
-        </div>
-
-        <div id="tab-delete" class="tab-content">
-            <h2>4. การลบข้อมูลผ่าน VIEW</h2>
-            <p>ใช้ลบข้อมูลในตารางหลักที่ตรงตามเงื่อนไขที่ VIEW มองเห็น</p>
-            
-            <div class="syntax-box">
-                <span class="keyword">DELETE FROM</span> <span class="variable">view_name</span><br>
-                <span class="keyword">WHERE</span> condition;
-            </div>
-
-            <div style="margin-top:20px;">
-                <p><strong>ตัวอย่างการใช้งาน:</strong> ลบข้อมูลพนักงานชื่อ Wichai ออกจากระบบ</p>
-                <div class="syntax-box" style="border-left-color: var(--accent);">
-                    DELETE FROM it_staff WHERE name = 'Wichai';
-                </div>
-                <p><strong>ผลลัพธ์หลังการลบ:</strong></p>
-                <table class="table-sim">
-                    <tr><th>name</th><th>salary</th></tr>
-                    <tr><td>Somsak</td><td>45,000</td></tr>
-                    <tr><td colspan="2" style="text-align:center; color:gray;">(ข้อมูล Wichai ถูกลบแล้ว)</td></tr>
-                </table>
-            </div>
-        </div>
-
-
         <button class="btn btn-primary" onclick="showLogin()" style="margin-top:20px;">
             <i class="fas fa-edit"></i> เตรียมตัวทำแบบทดสอบ
         </button>
@@ -279,7 +199,7 @@
         </div>
     </div>
 
- <div id="quiz-area" class="hidden">
+    <div id="quiz-area" class="hidden">
         <div class="box">
             <div class="quiz-controls">
                 <div style="display:flex; align-items: center; gap: 15px;">
@@ -290,11 +210,11 @@
                 </div>
                 
                 <div style="display:flex; gap: 10px; align-items: center;">
-                    <div class="timer-container" id="timer-display">
+                    <div class="timer-container">
                         <i class="fas fa-clock"></i> <span id="time-left">30</span>s
                     </div>
                     <div style="text-align: right;">
-                        <div style="font-weight:bold; font-size: 0.9rem;"><span id="display-user"></span></div>
+                        <div style="font-weight:bold; font-size: 0.9rem;"><span id="display-user"></span> (เลขที่ <span id="display-no"></span>)</div>
                         <div class="score-badge">Score: <span id="current-score">0</span></div>
                     </div>
                 </div>
@@ -303,33 +223,10 @@
 
             <div id="q-container">
                 <div id="question-text" style="font-size: 1.1rem; margin-bottom: 15px; background: #fffbeb; padding: 15px; border-radius: 8px; border-left: 5px solid var(--gold);"></div>
-                <textarea id="sql-input" placeholder="พิมพ์คำสั่ง SQL ที่นี่..."></textarea>
-                <div id="feedback-msg" class="feedback"></div>
-
-                <div style="display: flex; gap: 10px;">
-                    <button id="run-btn" class="btn btn-success" style="flex: 2;" onclick="processAnswer()">
-                        <i class="fas fa-play"></i> Run Command
-                    </button>
-                    <button id="skip-btn" class="btn btn-secondary" style="flex: 1;" onclick="nextQuestion()">
-                        ข้าม <i class="fas fa-forward"></i>
-                    </button>
-                </div>
-                <button id="next-btn" class="btn btn-primary hidden" onclick="nextQuestion()" style="margin-top:20px;">
-                    Next Mission <i class="fas fa-arrow-right"></i>
-                </button>
-                <button id="finish-btn" class="btn btn-primary hidden" onclick="showResults()" style="margin-top:20px; background: var(--accent);">
-                    <i class="fas fa-check-double"></i> ดูสรุปคะแนน
-                </button>
-            </div>
-        </div>
-    </div>
-
-            <div id="q-container">
-                <div id="question-text" style="font-size: 1.1rem; margin-bottom: 15px; background: #fffbeb; padding: 15px; border-radius: 8px; border-left: 5px solid var(--gold);"></div>
                 
                 <div id="table-preview" class="hidden">
-                    <p><small><i class="fas fa-table"></i> ผลลัพธ์จำลอง:</small></p>
-                    <div id="simulated-result"></div>
+                    <p><small><i class="fas fa-table"></i> ตารางอ้างอิง:</small></p>
+                    <table class="table-sim" id="simulated-result"></table>
                 </div>
 
                 <textarea id="sql-input" placeholder="พิมพ์คำสั่ง SQL ที่นี่..."></textarea>
@@ -347,7 +244,6 @@
                 <button id="next-btn" class="btn btn-primary hidden" onclick="nextQuestion()" style="margin-top:20px;">
                     Next Mission <i class="fas fa-arrow-right"></i>
                 </button>
-                
                 <button id="finish-btn" class="btn btn-primary hidden" onclick="showResults()" style="margin-top:20px; background: var(--accent);">
                     <i class="fas fa-check-double"></i> ดูสรุปคะแนน
                 </button>
@@ -383,18 +279,20 @@
     let currentQ = 0;
     let score = 0;
     let studentData = { name: "", no: "" };
+    let timeLeft = 30;
+    let timerInterval;
 
     const questions = [
         { task: "จงสร้าง VIEW ชื่อ <b>active_users</b> จากตาราง <b>users</b> โดยเลือกทุกคอลัมน์ที่ status = 'active'", answer: "CREATE VIEW active_users AS SELECT * FROM users WHERE status = 'active';", table: "<tr><th>id</th><th>name</th><th>status</th></tr><tr><td>1</td><td>Somsak</td><td>active</td></tr>" },
         { task: "จงเขียนคำสั่งเรียกดูข้อมูลทั้งหมดจาก VIEW ที่ชื่อ <b>active_users</b>", answer: "SELECT * FROM active_users;", table: "<tr><th>id</th><th>name</th><th>status</th></tr><tr><td>1</td><td>Somsak</td><td>active</td></tr>" },
         { task: "จงสร้าง VIEW ชื่อ <b>high_price</b> จากตาราง <b>products</b> เลือกทุกคอลัมน์ที่ price > 1000", answer: "CREATE VIEW high_price AS SELECT * FROM products WHERE price > 1000;", table: "<tr><th>p_id</th><th>name</th><th>price</th></tr><tr><td>101</td><td>Monitor</td><td>4500</td></tr>" },
-        { task: "จงเพิ่มข้อมูลชื่อ <b>'Notebook'</b> ราคา <b>25000</b> ลงใน VIEW ชื่อ <b>high_price</b>", answer: "INSERT INTO high_price (name, price) VALUES ('Notebook', 25000);", msg: "เพิ่มข้อมูลสำเร็จ!" },
-        { task: "จงแก้ไขราคาใน VIEW <b>high_price</b> เป็น <b>1500</b> สำหรับสินค้าที่มี <b>id = 5</b>", answer: "UPDATE high_price SET price = 1500 WHERE id = 5;", msg: "อัปเดตราคาสำเร็จ!" },
-        { task: "จงลบข้อมูลออกจาก VIEW <b>active_users</b> สำหรับผู้ใช้ที่มี <b>id = 10</b>", answer: "DELETE FROM active_users WHERE id = 10;", msg: "ลบข้อมูลสำเร็จ!" },
-        { task: "หากต้องการลบตารางเสมือน <b>active_users</b> ออกจากระบบ ต้องใช้คำสั่งใด", answer: "DROP VIEW active_users;", msg: "ลบ View สำเร็จ!" },
+        { task: "จงเพิ่มข้อมูลชื่อ <b>'Notebook'</b> ราคา <b>25000</b> ลงใน VIEW ชื่อ <b>high_price</b>", answer: "INSERT INTO high_price (name, price) VALUES ('Notebook', 25000);" },
+        { task: "จงแก้ไขราคาใน VIEW <b>high_price</b> เป็น <b>1500</b> สำหรับสินค้าที่มี <b>id = 5</b>", answer: "UPDATE high_price SET price = 1500 WHERE id = 5;" },
+        { task: "จงลบข้อมูลออกจาก VIEW <b>active_users</b> สำหรับผู้ใช้ที่มี <b>id = 10</b>", answer: "DELETE FROM active_users WHERE id = 10;" },
+        { task: "หากต้องการลบตารางเสมือน <b>active_users</b> ออกจากระบบ ต้องใช้คำสั่งใด", answer: "DROP VIEW active_users;" },
         { task: "จงสร้าง VIEW ชื่อ <b>staff_list</b> โดยเลือกเฉพาะคอลัมน์ <b>name</b> จาก <b>employees</b>", answer: "CREATE VIEW staff_list AS SELECT name FROM employees;", table: "<tr><th>name</th></tr><tr><td>John</td></tr>" },
-        { task: "จงเรียกดูข้อมูลจาก VIEW <b>staff_list</b> โดยเรียงชื่อตามตัวอักษร", answer: "SELECT * FROM staff_list ORDER BY name;", table: "<tr><th>name</th></tr><tr><td>John</td></tr>" },
-        { task: "จงใช้คำสั่งลบตารางเสมือน <b>high_price</b> ออกจากระบบ", answer: "DROP VIEW high_price;", msg: "ลบ View สำเร็จ!" }
+        { task: "จงเรียกดูข้อมูลจาก VIEW <b>staff_list</b> โดยเรียงชื่อตามตัวอักษร", answer: "SELECT * FROM staff_list ORDER BY name;" },
+        { task: "จงใช้คำสั่งลบตารางเสมือน <b>high_price</b> ออกจากระบบ", answer: "DROP VIEW high_price;" }
     ];
 
     function openTab(evt, tabName) {
@@ -424,16 +322,53 @@
     }
 
     function loadQuestion() {
+        clearInterval(timerInterval);
         const q = questions[currentQ];
         document.getElementById('q-number').innerText = currentQ + 1;
         document.getElementById('question-text').innerHTML = q.task;
+        
+        if (q.table) {
+            document.getElementById('table-preview').classList.remove('hidden');
+            document.getElementById('simulated-result').innerHTML = q.table;
+        } else {
+            document.getElementById('table-preview').classList.add('hidden');
+        }
+
         document.getElementById('sql-input').value = "";
         document.getElementById('sql-input').disabled = false;
         document.getElementById('feedback-msg').style.display = "none";
-        document.getElementById('table-preview').classList.add('hidden');
         document.getElementById('next-btn').classList.add('hidden');
         document.getElementById('run-btn').classList.remove('hidden');
         document.getElementById('skip-btn').classList.remove('hidden');
+        document.getElementById('finish-btn').classList.add('hidden');
+        startTimer();
+    }
+
+    function startTimer() {
+        timeLeft = 30;
+        updateTimerDisplay();
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            updateTimerDisplay();
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                timeOut();
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        document.getElementById('time-left').innerText = timeLeft;
+        const barWidth = (timeLeft / 30) * 100;
+        document.getElementById('timer-bar').style.width = barWidth + "%";
+    }
+
+    function timeOut() {
+        const feedback = document.getElementById('feedback-msg');
+        feedback.style.display = "block";
+        feedback.innerHTML = `<i class="fas fa-hourglass-end"></i> <b>หมดเวลา!</b> ข้อนี้ไม่ได้คะแนน`;
+        feedback.className = "feedback wrong";
+        endQuestion();
     }
 
     function cleanSQL(str) {
@@ -441,6 +376,7 @@
     }
 
     function processAnswer() {
+        clearInterval(timerInterval);
         const input = cleanSQL(document.getElementById('sql-input').value);
         const q = questions[currentQ];
         const feedback = document.getElementById('feedback-msg');
@@ -453,14 +389,16 @@
             feedback.className = "feedback correct";
             confetti({ particleCount: 30, spread: 50, origin: { y: 0.8 } });
         } else {
-            feedback.innerHTML = `<i class="fas fa-times-circle"></i> <b>ผิดพลาด!</b> ข้อนี้ไม่ได้คะแนน (คำตอบคือ: ${q.answer})`;
+            feedback.innerHTML = `<i class="fas fa-times-circle"></i> <b>ผิด!</b> คำตอบคือ: <code style="background:#fff; padding:2px 5px;">${q.answer}</code>`;
             feedback.className = "feedback wrong";
         }
+        endQuestion();
+    }
 
+    function endQuestion() {
         document.getElementById('sql-input').disabled = true;
         document.getElementById('run-btn').classList.add('hidden');
         document.getElementById('skip-btn').classList.add('hidden');
-
         if (currentQ < questions.length - 1) {
             document.getElementById('next-btn').classList.remove('hidden');
         } else {
@@ -474,6 +412,15 @@
             loadQuestion();
         } else {
             showResults();
+        }
+    }
+
+    function confirmReset() {
+        if (confirm("ต้องการล้างคะแนนและเริ่มทำใหม่ตั้งแต่ข้อแรกหรือไม่?")) {
+            score = 0;
+            currentQ = 0;
+            document.getElementById('current-score').innerText = "0";
+            loadQuestion();
         }
     }
 
@@ -500,96 +447,6 @@
             </tr>
         `).join('');
     }
-
-    let timeLeft = 30;
-    let timerInterval;
-
-    function startTimer() {
-        clearInterval(timerInterval);
-        timeLeft = 30;
-        updateTimerDisplay();
-        timerInterval = setInterval(() => {
-            timeLeft--;
-            updateTimerDisplay();
-            if (timeLeft <= 0) {
-                clearInterval(timerInterval);
-                timeOut();
-            }
-        }, 1000);
-    }
-
-    function updateTimerDisplay() {
-        document.getElementById('time-left').innerText = timeLeft;
-        const barWidth = (timeLeft / 30) * 100;
-        document.getElementById('timer-bar').style.width = barWidth + "%";
-    }
-
-    function timeOut() {
-        const feedback = document.getElementById('feedback-msg');
-        feedback.style.display = "block";
-        feedback.innerHTML = `<i class="fas fa-hourglass-end"></i> <b>หมดเวลา!</b> ข้อนี้ไม่ได้คะแนน`;
-        feedback.className = "feedback wrong";
-        document.getElementById('sql-input').disabled = true;
-        document.getElementById('run-btn').classList.add('hidden');
-        document.getElementById('skip-btn').classList.add('hidden');
-        if (currentQ < questions.length - 1) {
-            document.getElementById('next-btn').classList.remove('hidden');
-        } else {
-            document.getElementById('finish-btn').classList.remove('hidden');
-        }
-    }
-
-    function confirmReset() {
-        if (confirm("ต้องการล้างคะแนนและเริ่มทำใหม่ตั้งแต่ข้อแรกหรือไม่?")) {
-            score = 0;
-            currentQ = 0;
-            document.getElementById('current-score').innerText = "0";
-            loadQuestion();
-        }
-    }
-
-    // แก้ไขฟังก์ชันเดิมให้รองรับ Timer
-    function loadQuestion() {
-        const q = questions[currentQ];
-        document.getElementById('q-number').innerText = currentQ + 1;
-        document.getElementById('question-text').innerHTML = q.task;
-        document.getElementById('sql-input').value = "";
-        document.getElementById('sql-input').disabled = false;
-        document.getElementById('feedback-msg').style.display = "none";
-        document.getElementById('next-btn').classList.add('hidden');
-        document.getElementById('run-btn').classList.remove('hidden');
-        document.getElementById('skip-btn').classList.remove('hidden');
-        startTimer();
-    }
-
-    function processAnswer() {
-        clearInterval(timerInterval);
-        const input = cleanSQL(document.getElementById('sql-input').value);
-        const q = questions[currentQ];
-        const feedback = document.getElementById('feedback-msg');
-        feedback.style.display = "block";
-
-        if (input === cleanSQL(q.answer)) {
-            score += 10;
-            document.getElementById('current-score').innerText = score;
-            feedback.innerHTML = `<i class="fas fa-check-circle"></i> <b>ถูกต้อง!</b> ได้รับ 10 คะแนน`;
-            feedback.className = "feedback correct";
-            confetti({ particleCount: 30, spread: 50, origin: { y: 0.8 } });
-        } else {
-            feedback.innerHTML = `<i class="fas fa-times-circle"></i> <b>ผิด!</b> คำตอบคือ: ${q.answer}`;
-            feedback.className = "feedback wrong";
-        }
-
-        document.getElementById('sql-input').disabled = true;
-        document.getElementById('run-btn').classList.add('hidden');
-        document.getElementById('skip-btn').classList.add('hidden');
-        if (currentQ < questions.length - 1) {
-            document.getElementById('next-btn').classList.remove('hidden');
-        } else {
-            document.getElementById('finish-btn').classList.remove('hidden');
-        }
-    }
-    
 </script>
 </body>
 </html>
