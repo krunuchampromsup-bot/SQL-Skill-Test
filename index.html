@@ -111,7 +111,7 @@
         <p>บทเรียนโต้ตอบ: สร้างและจัดการตารางเสมือน โดย ครูนุช Smart Com</p>
     </div>
 
-    <div id="lesson-area" class="box">
+  <div id="lesson-area" class="box">
         <div class="tab-container">
             <button class="tab-btn active" onclick="openTab(event, 'tab-create')">VIEW TABLE</button>
             <button class="tab-btn" onclick="openTab(event, 'tab-insert')">INSERT VIEW</button>
@@ -121,28 +121,96 @@
 
         <div id="tab-create" class="tab-content active">
             <h2>1. รูปแบบคำสั่งการสร้าง VIEW</h2>
+            <p>VIEW คือตารางเสมือนที่สร้างจากคำสั่ง SELECT เพื่อช่วยให้การจัดการข้อมูลง่ายขึ้น</p>
+            
             <div class="syntax-box">
                 <span class="keyword">CREATE VIEW</span> <span class="variable">view_name</span> <span class="keyword">AS</span><br>
-                <span class="keyword">SELECT</span> column1, column2, ... FROM table_name <span class="keyword">WHERE</span> condition;
+                <span class="keyword">SELECT</span> column1, column2, ...<br>
+                <span class="keyword">FROM</span> table_name<br>
+                <span class="keyword">WHERE</span> condition;
             </div>
-            <p><strong>ตัวอย่าง:</strong> <code>CREATE VIEW it_staff AS SELECT name, salary FROM employees WHERE dept = 'IT';</code></p>
+
+            <div style="margin-top:20px;">
+                <p><strong>ตัวอย่างการใช้งาน:</strong> สร้าง View เพื่อดูเฉพาะพนักงานแผนก IT</p>
+                <div class="syntax-box" style="border-left-color: var(--accent);">
+                    CREATE VIEW it_staff AS SELECT name, salary FROM employees WHERE dept = 'IT';
+                </div>
+                <p><strong>ผลลัพธ์ที่ได้:</strong></p>
+                <table class="table-sim">
+                    <tr><th>name</th><th>salary</th></tr>
+                    <tr><td>Somsak</td><td>45,000</td></tr>
+                    <tr><td>Wichai</td><td>38,000</td></tr>
+                </table>
+            </div>
         </div>
+
         <div id="tab-insert" class="tab-content">
-             <h2>2. การเพิ่มข้อมูลผ่าน VIEW</h2>
-             <div class="syntax-box">
-                <span class="keyword">INSERT INTO</span> <span class="variable">view_name</span> (col1, col2) <span class="keyword">VALUES</span> (val1, val2);
+            <h2>2. การเพิ่มข้อมูลผ่าน VIEW</h2>
+            <p>เราสามารถเพิ่มข้อมูลลงในตารางหลักผ่านทาง VIEW ได้หาก VIEW นั้นประกอบด้วยคอลัมน์ที่จำเป็นครบถ้วน</p>
+            
+            <div class="syntax-box">
+                <span class="keyword">INSERT INTO</span> <span class="variable">view_name</span> (column1, column2)<br>
+                <span class="keyword">VALUES</span> (value1, value2);
+            </div>
+
+            <div style="margin-top:20px;">
+                <p><strong>ตัวอย่างการใช้งาน:</strong> เพิ่มพนักงานใหม่ผ่าน it_staff</p>
+                <div class="syntax-box" style="border-left-color: var(--accent);">
+                    INSERT INTO it_staff (name, salary) VALUES ('Jane', 42000);
+                </div>
+                <p><strong>ผลลัพธ์ในตาราง (รวมข้อมูลใหม่):</strong></p>
+                <table class="table-sim">
+                    <tr><th>name</th><th>salary</th></tr>
+                    <tr><td>...</td><td>...</td></tr>
+                    <tr><td>Jane</td><td>42,000</td></tr>
+                </table>
             </div>
         </div>
+
         <div id="tab-update" class="tab-content">
-             <h2>3. การแก้ไขข้อมูลผ่าน VIEW</h2>
-             <div class="syntax-box">
-                <span class="keyword">UPDATE</span> <span class="variable">view_name</span> <span class="keyword">SET</span> col = val <span class="keyword">WHERE</span> condition;
+            <h2>3. การแก้ไขข้อมูลผ่าน VIEW</h2>
+            <p>การแก้ไขข้อมูลใน VIEW จะส่งผลกระทบโดยตรงไปยังข้อมูลที่อยู่ในตารางหลัก</p>
+            
+            <div class="syntax-box">
+                <span class="keyword">UPDATE</span> <span class="variable">view_name</span><br>
+                <span class="keyword">SET</span> column1 = value1<br>
+                <span class="keyword">WHERE</span> condition;
+            </div>
+
+            <div style="margin-top:20px;">
+                <p><strong>ตัวอย่างการใช้งาน:</strong> ปรับเงินเดือนพนักงานชื่อ Somsak ผ่าน View</p>
+                <div class="syntax-box" style="border-left-color: var(--accent);">
+                    UPDATE it_staff SET salary = 50000 WHERE name = 'Somsak';
+                </div>
+                <p><strong>ผลลัพธ์หลังการแก้ไข:</strong></p>
+                <table class="table-sim">
+                    <tr><th>name</th><th>salary</th></tr>
+                    <tr><td>Somsak</td><td><b style="color:var(--accent)">50,000</b></td></tr>
+                    <tr><td>Wichai</td><td>38,000</td></tr>
+                </table>
             </div>
         </div>
+
         <div id="tab-delete" class="tab-content">
-             <h2>4. การลบข้อมูลผ่าน VIEW</h2>
-             <div class="syntax-box">
-                <span class="keyword">DELETE FROM</span> <span class="variable">view_name</span> <span class="keyword">WHERE</span> condition;
+            <h2>4. การลบข้อมูลผ่าน VIEW</h2>
+            <p>ใช้ลบข้อมูลในตารางหลักที่ตรงตามเงื่อนไขที่ VIEW มองเห็น</p>
+            
+            <div class="syntax-box">
+                <span class="keyword">DELETE FROM</span> <span class="variable">view_name</span><br>
+                <span class="keyword">WHERE</span> condition;
+            </div>
+
+            <div style="margin-top:20px;">
+                <p><strong>ตัวอย่างการใช้งาน:</strong> ลบข้อมูลพนักงานชื่อ Wichai ออกจากระบบ</p>
+                <div class="syntax-box" style="border-left-color: var(--accent);">
+                    DELETE FROM it_staff WHERE name = 'Wichai';
+                </div>
+                <p><strong>ผลลัพธ์หลังการลบ:</strong></p>
+                <table class="table-sim">
+                    <tr><th>name</th><th>salary</th></tr>
+                    <tr><td>Somsak</td><td>45,000</td></tr>
+                    <tr><td colspan="2" style="text-align:center; color:gray;">(ข้อมูล Wichai ถูกลบแล้ว)</td></tr>
+                </table>
             </div>
         </div>
 
