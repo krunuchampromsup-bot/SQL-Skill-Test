@@ -18,7 +18,6 @@
             --syntax-bg: #1e293b;
             --border: #e2e8f0;
             --gold: #f59e0b;
-            --error: #ef4444;
         }
 
         body {
@@ -44,7 +43,6 @@
             animation: fadeIn 0.5s ease;
         }
 
-        /* Tab System */
         .tab-container {
             display: flex; gap: 5px; margin-bottom: 20px;
             background: #e2e8f0; padding: 5px; border-radius: 10px;
@@ -84,12 +82,13 @@
         .btn-primary { background: var(--primary); color: white; width: 100%; }
         .btn-success { background: var(--accent); color: white; margin-top: 10px; }
 
-        textarea {
-            width: 100%; height: 100px; padding: 15px; border-radius: 8px;
-            border: 2px solid var(--border); margin: 10px 0; font-family: 'Consolas', monospace; 
-            box-sizing: border-box; font-size: 1rem; outline: none; resize: vertical;
+        input[type="text"], textarea {
+            width: 100%; padding: 12px; border-radius: 8px;
+            border: 2px solid var(--border); margin: 10px 0; font-family: 'Prompt', sans-serif; 
+            box-sizing: border-box; font-size: 1rem; outline: none;
         }
-        textarea:focus { border-color: var(--primary); }
+        textarea { font-family: 'Consolas', monospace; height: 100px; }
+        input:focus, textarea:focus { border-color: var(--primary); }
 
         .feedback { margin-top: 15px; padding: 15px; border-radius: 8px; display: none; }
         .feedback.correct { background: #f0fdf4; color: #166534; display: block; border: 1px solid #bbf7d0; }
@@ -112,7 +111,7 @@
         <p>บทเรียนโต้ตอบ: สร้างและจัดการตารางเสมือน โดย ครูนุช Smart Com</p>
     </div>
 
-     <div id="lesson-area" class="box">
+    <div id="lesson-area" class="box">
         <div class="tab-container">
             <button class="tab-btn active" onclick="openTab(event, 'tab-create')">VIEW TABLE</button>
             <button class="tab-btn" onclick="openTab(event, 'tab-insert')">INSERT VIEW</button>
@@ -122,124 +121,67 @@
 
         <div id="tab-create" class="tab-content active">
             <h2>1. รูปแบบคำสั่งการสร้าง VIEW</h2>
-            <p>VIEW คือตารางเสมือนที่สร้างจากคำสั่ง SELECT เพื่อช่วยให้การจัดการข้อมูลง่ายขึ้น</p>
-            
             <div class="syntax-box">
                 <span class="keyword">CREATE VIEW</span> <span class="variable">view_name</span> <span class="keyword">AS</span><br>
-                <span class="keyword">SELECT</span> column1, column2, ...<br>
-                <span class="keyword">FROM</span> table_name<br>
-                <span class="keyword">WHERE</span> condition;
+                <span class="keyword">SELECT</span> column1, column2, ... FROM table_name <span class="keyword">WHERE</span> condition;
             </div>
-
-            <div style="margin-top:20px;">
-                <p><strong>ตัวอย่างการใช้งาน:</strong> สร้าง View เพื่อดูเฉพาะพนักงานแผนก IT</p>
-                <div class="syntax-box" style="border-left-color: var(--accent);">
-                    CREATE VIEW it_staff AS SELECT name, salary FROM employees WHERE dept = 'IT';
-                </div>
-                <p><strong>ผลลัพธ์ที่ได้:</strong></p>
-                <table class="table-sim">
-                    <tr><th>name</th><th>salary</th></tr>
-                    <tr><td>Somsak</td><td>45,000</td></tr>
-                    <tr><td>Wichai</td><td>38,000</td></tr>
-                </table>
-            </div>
+            <p><strong>ตัวอย่าง:</strong> <code>CREATE VIEW it_staff AS SELECT name, salary FROM employees WHERE dept = 'IT';</code></p>
         </div>
-
         <div id="tab-insert" class="tab-content">
-            <h2>2. การเพิ่มข้อมูลผ่าน VIEW</h2>
-            <p>เราสามารถเพิ่มข้อมูลลงในตารางหลักผ่านทาง VIEW ได้หาก VIEW นั้นประกอบด้วยคอลัมน์ที่จำเป็นครบถ้วน</p>
-            
-            <div class="syntax-box">
-                <span class="keyword">INSERT INTO</span> <span class="variable">view_name</span> (column1, column2)<br>
-                <span class="keyword">VALUES</span> (value1, value2);
-            </div>
-
-            <div style="margin-top:20px;">
-                <p><strong>ตัวอย่างการใช้งาน:</strong> เพิ่มพนักงานใหม่ผ่าน it_staff</p>
-                <div class="syntax-box" style="border-left-color: var(--accent);">
-                    INSERT INTO it_staff (name, salary) VALUES ('Jane', 42000);
-                </div>
-                <p><strong>ผลลัพธ์ในตาราง (รวมข้อมูลใหม่):</strong></p>
-                <table class="table-sim">
-                    <tr><th>name</th><th>salary</th></tr>
-                    <tr><td>...</td><td>...</td></tr>
-                    <tr><td>Jane</td><td>42,000</td></tr>
-                </table>
+             <h2>2. การเพิ่มข้อมูลผ่าน VIEW</h2>
+             <div class="syntax-box">
+                <span class="keyword">INSERT INTO</span> <span class="variable">view_name</span> (col1, col2) <span class="keyword">VALUES</span> (val1, val2);
             </div>
         </div>
-
         <div id="tab-update" class="tab-content">
-            <h2>3. การแก้ไขข้อมูลผ่าน VIEW</h2>
-            <p>การแก้ไขข้อมูลใน VIEW จะส่งผลกระทบโดยตรงไปยังข้อมูลที่อยู่ในตารางหลัก</p>
-            
-            <div class="syntax-box">
-                <span class="keyword">UPDATE</span> <span class="variable">view_name</span><br>
-                <span class="keyword">SET</span> column1 = value1<br>
-                <span class="keyword">WHERE</span> condition;
-            </div>
-
-            <div style="margin-top:20px;">
-                <p><strong>ตัวอย่างการใช้งาน:</strong> ปรับเงินเดือนพนักงานชื่อ Somsak ผ่าน View</p>
-                <div class="syntax-box" style="border-left-color: var(--accent);">
-                    UPDATE it_staff SET salary = 50000 WHERE name = 'Somsak';
-                </div>
-                <p><strong>ผลลัพธ์หลังการแก้ไข:</strong></p>
-                <table class="table-sim">
-                    <tr><th>name</th><th>salary</th></tr>
-                    <tr><td>Somsak</td><td><b style="color:var(--accent)">50,000</b></td></tr>
-                    <tr><td>Wichai</td><td>38,000</td></tr>
-                </table>
+             <h2>3. การแก้ไขข้อมูลผ่าน VIEW</h2>
+             <div class="syntax-box">
+                <span class="keyword">UPDATE</span> <span class="variable">view_name</span> <span class="keyword">SET</span> col = val <span class="keyword">WHERE</span> condition;
             </div>
         </div>
-
         <div id="tab-delete" class="tab-content">
-            <h2>4. การลบข้อมูลผ่าน VIEW</h2>
-            <p>ใช้ลบข้อมูลในตารางหลักที่ตรงตามเงื่อนไขที่ VIEW มองเห็น</p>
-            
-            <div class="syntax-box">
-                <span class="keyword">DELETE FROM</span> <span class="variable">view_name</span><br>
-                <span class="keyword">WHERE</span> condition;
-            </div>
-
-            <div style="margin-top:20px;">
-                <p><strong>ตัวอย่างการใช้งาน:</strong> ลบข้อมูลพนักงานชื่อ Wichai ออกจากระบบ</p>
-                <div class="syntax-box" style="border-left-color: var(--accent);">
-                    DELETE FROM it_staff WHERE name = 'Wichai';
-                </div>
-                <p><strong>ผลลัพธ์หลังการลบ:</strong></p>
-                <table class="table-sim">
-                    <tr><th>name</th><th>salary</th></tr>
-                    <tr><td>Somsak</td><td>45,000</td></tr>
-                    <tr><td colspan="2" style="text-align:center; color:gray;">(ข้อมูล Wichai ถูกลบแล้ว)</td></tr>
-                </table>
+             <h2>4. การลบข้อมูลผ่าน VIEW</h2>
+             <div class="syntax-box">
+                <span class="keyword">DELETE FROM</span> <span class="variable">view_name</span> <span class="keyword">WHERE</span> condition;
             </div>
         </div>
 
-
-        <button class="btn btn-primary" onclick="startQuiz()" style="margin-top:20px;">
-            <i class="fas fa-terminal"></i> เข้าสู่โหมดปฏิบัติการ SQL (10 ภารกิจ)
+        <button class="btn btn-primary" onclick="showLogin()" style="margin-top:20px;">
+            <i class="fas fa-edit"></i> เตรียมตัวทำแบบทดสอบ
         </button>
+    </div>
+
+    <div id="login-area" class="box hidden">
+        <h2 style="text-align:center; color: var(--primary);">ลงทะเบียนผู้เข้าเรียน</h2>
+        <div style="max-width: 400px; margin: auto;">
+            <label>ชื่อ-นามสกุล:</label>
+            <input type="text" id="student-name" placeholder="ระบุชื่อ-นามสกุล">
+            <label>เลขที่:</label>
+            <input type="text" id="student-no" placeholder="ระบุเลขที่">
+            <button class="btn btn-primary" onclick="startQuiz()" style="margin-top:15px;">
+                เข้าสู่โหมดภารกิจ <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
     </div>
 
     <div id="quiz-area" class="hidden">
         <div class="box">
             <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h2 style="color:var(--primary); margin:0;"><i class="fas fa-code"></i> Mission <span id="q-number">1</span>/10</h2>
-                <div style="font-weight:bold; font-size: 1.2rem; color: var(--gold);">
-                    <i class="fas fa-star"></i> Score: <span id="current-score">0</span>
+                <div style="font-weight:bold; font-size: 1.1rem;">
+                    <span id="display-user"></span> (เลขที่ <span id="display-no"></span>)
                 </div>
             </div>
 
             <div id="q-container">
-                <div id="question-text" style="font-size: 1.1rem; margin-bottom: 15px;"></div>
+                <div id="question-text" style="font-size: 1.1rem; margin-bottom: 15px; background: #fffbeb; padding: 15px; border-radius: 8px; border-left: 5px solid var(--gold);"></div>
                 
                 <div id="table-preview" class="hidden">
-                    <p><small><i class="fas fa-table"></i> ข้อมูลที่ได้จากคำสั่งของคุณ:</small></p>
+                    <p><small><i class="fas fa-table"></i> ผลลัพธ์จำลอง:</small></p>
                     <div id="simulated-result"></div>
                 </div>
 
-                <textarea id="sql-input" placeholder="พิมพ์คำสั่ง SQL ที่นี่... (เช่น CREATE VIEW ...)"></textarea>
-                
+                <textarea id="sql-input" placeholder="พิมพ์คำสั่ง SQL ที่นี่..."></textarea>
                 <div id="feedback-msg" class="feedback"></div>
 
                 <button id="run-btn" class="btn btn-success" onclick="processAnswer()">
@@ -251,7 +193,7 @@
                 </button>
                 
                 <button id="finish-btn" class="btn btn-primary hidden" onclick="showResults()" style="margin-top:20px; background: var(--accent);">
-                    <i class="fas fa-check-double"></i> ดูผลการเรียนทั้งหมด
+                    <i class="fas fa-check-double"></i> สรุปคะแนนทั้งหมด
                 </button>
             </div>
         </div>
@@ -259,9 +201,9 @@
 
     <div id="result-screen" class="hidden">
         <div class="box" style="text-align: center;">
-            <h2 style="color: var(--primary);"><i class="fas fa-award"></i> Mission Accomplished!</h2>
+            <h2 style="color: var(--primary);"><i class="fas fa-award"></i> การทดสอบเสร็จสมบูรณ์</h2>
             <div style="font-size: 5rem; color: var(--accent); font-weight: bold; margin: 10px 0;" id="final-score-val">0</div>
-            <p style="font-size: 1.2rem;">ยินดีด้วย! คุณเชี่ยวชาญการใช้ SQL VIEW แล้ว</p>
+            <p id="congrats-text" style="font-size: 1.2rem;"></p>
         </div>
 
         <div class="box">
@@ -270,13 +212,12 @@
             </h2>
             <table class="leaderboard-table">
                 <thead>
-                    <tr><th>Rank</th><th>Name</th><th>Score</th></tr>
+                    <tr><th>Rank</th><th>เลขที่</th><th>ชื่อ-นามสกุล</th><th>Score</th></tr>
                 </thead>
-                <tbody id="leaderboard-body">
-                    </tbody>
+                <tbody id="leaderboard-body"></tbody>
             </table>
             <button class="btn btn-primary" style="margin-top:30px;" onclick="location.reload()">
-                <i class="fas fa-redo"></i> กลับไปหน้าบทเรียน
+                <i class="fas fa-redo"></i> กลับไปทบทวนบทเรียน
             </button>
         </div>
     </div>
@@ -285,57 +226,58 @@
 <script>
     let currentQ = 0;
     let score = 0;
+    let studentData = { name: "", no: "" };
 
     const questions = [
         {
-            task: "จงสร้าง VIEW ชื่อ <b>active_users</b> จากตาราง users โดยเลือกทุกคอลัมน์ที่ status = 'active'",
-            keywords: [create view active_users as select from users where status active],
-            table: "<tr><th>id</th><th>name</th><th>status</th></tr><tr><td>1</td><td>Somsak</td><td>active</td></tr><tr><td>2</td><td>Wichai</td><td>active</td></tr>"
+            task: "จงสร้าง VIEW ชื่อ <b>active_users</b> จากตาราง <b>users</b> โดยเลือกทุกคอลัมน์ที่ status = 'active'",
+            answer: "CREATE VIEW active_users AS SELECT * FROM users WHERE status = 'active';",
+            table: "<tr><th>id</th><th>name</th><th>status</th></tr><tr><td>1</td><td>Somsak</td><td>active</td></tr>"
         },
         {
-            task: "จงเขียนคำสั่งเรียกดูข้อมูล <b>ทั้งหมด</b> จาก VIEW ที่ชื่อ <b>active_users</b>",
-            keywords: ["select", "*", "from", "active_users"],
-            table: "<tr><th>id</th><th>name</th><th>status</th></tr><tr><td>1</td><td>Somsak</td><td>active</td></tr><tr><td>2</td><td>Wichai</td><td>active</td></tr>"
+            task: "จงเขียนคำสั่งเรียกดูข้อมูลทั้งหมดจาก VIEW ที่ชื่อ <b>active_users</b>",
+            answer: "SELECT * FROM active_users;",
+            table: "<tr><th>id</th><th>name</th><th>status</th></tr><tr><td>1</td><td>Somsak</td><td>active</td></tr>"
         },
         {
-            task: "จงสร้าง VIEW ชื่อ <b>high_price</b> จากตาราง products เลือกทุกคอลัมน์ที่ price > 1000",
-            keywords: ["create view", "high_price", "as", "select", "from", "products", "where", "price", "1000"],
+            task: "จงสร้าง VIEW ชื่อ <b>high_price</b> จากตาราง <b>products</b> เลือกทุกคอลัมน์ที่ price > 1000",
+            answer: "CREATE VIEW high_price AS SELECT * FROM products WHERE price > 1000;",
             table: "<tr><th>p_id</th><th>name</th><th>price</th></tr><tr><td>101</td><td>Monitor</td><td>4500</td></tr>"
         },
         {
-            task: "จงเพิ่มข้อมูลชื่อ 'Notebook' ราคา 25000 ลงใน VIEW <b>high_price</b> (คอลัมน์ name, price)",
-            keywords: ["insert into", "high_price", "name", "price", "values", "notebook", "25000"],
-            msg: "บันทึกข้อมูลเข้าสู่ตารางหลักผ่าน View สำเร็จ!"
+            task: "จงเพิ่มข้อมูลชื่อ <b>'Notebook'</b> ราคา <b>25000</b> ลงใน VIEW ชื่อ <b>high_price</b> (คอลัมน์ name, price)",
+            answer: "INSERT INTO high_price (name, price) VALUES ('Notebook', 25000);",
+            msg: "เพิ่มข้อมูล 'Notebook' สำเร็จ!"
         },
         {
-            task: "จงแก้ไขราคา (price) ใน VIEW <b>high_price</b> เป็น 1500 สำหรับสินค้าที่มี id = 5",
-            keywords: ["update", "high_price", "set", "price", "1500", "where", "id", "5"],
-            msg: "แก้ไขข้อมูลสำเร็จ! (1 row updated)"
+            task: "จงแก้ไขราคา (price) ใน VIEW <b>high_price</b> เป็น <b>1500</b> สำหรับสินค้าที่มี <b>id = 5</b>",
+            answer: "UPDATE high_price SET price = 1500 WHERE id = 5;",
+            msg: "อัปเดตราคาเป็น 1500 สำเร็จ!"
         },
         {
-            task: "จงลบข้อมูลออกจาก VIEW <b>active_users</b> สำหรับผู้ใช้ที่มี id = 10",
-            keywords: ["delete from", "active_users", "where", "id", "10"],
-            msg: "ลบข้อมูลสำเร็จ! ข้อมูลในตาราง users จะถูกลบไปด้วย"
+            task: "จงลบข้อมูลออกจาก VIEW <b>active_users</b> สำหรับผู้ใช้ที่มี <b>id = 10</b>",
+            answer: "DELETE FROM active_users WHERE id = 10;",
+            msg: "ลบข้อมูล ID 10 สำเร็จ!"
         },
         {
-            task: "หากต้องการลบตารางเสมือน <b>active_users</b> ออกจากฐานข้อมูล ต้องใช้คำสั่งใด",
-            keywords: ["drop view", "active_users"],
-            msg: "ลบ VIEW 'active_users' ออกจากระบบแล้ว"
+            task: "หากต้องการลบตารางเสมือน <b>active_users</b> ออกจากระบบฐานข้อมูล ต้องใช้คำสั่งใด",
+            answer: "DROP VIEW active_users;",
+            msg: "ลบ View ออกจากระบบสำเร็จ!"
         },
         {
-            task: "จงสร้าง VIEW ชื่อ <b>staff_list</b> โดยเลือกเฉพาะคอลัมน์ <b>name</b> จากตาราง employees",
-            keywords: ["create view", "staff_list", "as", "select", "name", "from", "employees"],
-            table: "<tr><th>name</th></tr><tr><td>John</td></tr><tr><td>Jane</td></tr>"
+            task: "จงสร้าง VIEW ชื่อ <b>staff_list</b> โดยเลือกเฉพาะคอลัมน์ <b>name</b> จากตาราง <b>employees</b>",
+            answer: "CREATE VIEW staff_list AS SELECT name FROM employees;",
+            table: "<tr><th>name</th></tr><tr><td>John</td></tr>"
         },
         {
-            task: "จงเขียนคำสั่ง SELECT ข้อมูลจาก VIEW <b>staff_list</b> โดยเรียงชื่อ (ORDER BY name)",
-            keywords: ["select", "from", "staff_list", "order by", "name"],
-            table: "<tr><th>name</th></tr><tr><td>Jane</td></tr><tr><td>John</td></tr>"
+            task: "จงเขียนคำสั่งเรียกดูข้อมูลจาก VIEW <b>staff_list</b> โดยเรียงชื่อตามตัวอักษร (ORDER BY name)",
+            answer: "SELECT * FROM staff_list ORDER BY name;",
+            table: "<tr><th>name</th></tr><tr><td>John</td></tr>"
         },
         {
             task: "จงใช้คำสั่งลบตารางเสมือน <b>high_price</b> ออกจากระบบฐานข้อมูล",
-            keywords: ["drop view", "high_price"],
-            msg: "ลบ VIEW 'high_price' ออกจากระบบถาวร"
+            answer: "DROP VIEW high_price;",
+            msg: "ลบ View high_price สำเร็จ!"
         }
     ];
 
@@ -348,8 +290,26 @@
         evt.currentTarget.classList.add("active");
     }
 
-    function startQuiz() {
+    function showLogin() {
         document.getElementById('lesson-area').classList.add('hidden');
+        document.getElementById('login-area').classList.remove('hidden');
+    }
+
+    function startQuiz() {
+        const name = document.getElementById('student-name').value.trim();
+        const no = document.getElementById('student-no').value.trim();
+        
+        if (!name || !no) {
+            alert("กรุณากรอกชื่อและเลขที่ก่อนเริ่มครับ");
+            return;
+        }
+        
+        studentData.name = name;
+        studentData.no = no;
+        
+        document.getElementById('display-user').innerText = name;
+        document.getElementById('display-no').innerText = no;
+        document.getElementById('login-area').classList.add('hidden');
         document.getElementById('quiz-area').classList.remove('hidden');
         loadQuestion();
     }
@@ -359,28 +319,36 @@
         document.getElementById('q-number').innerText = currentQ + 1;
         document.getElementById('question-text').innerHTML = q.task;
         document.getElementById('sql-input').value = "";
-        document.getElementById('feedback-msg').className = "feedback";
+        document.getElementById('feedback-msg').style.display = "none";
         document.getElementById('table-preview').classList.add('hidden');
         document.getElementById('next-btn').classList.add('hidden');
         document.getElementById('run-btn').classList.remove('hidden');
     }
 
-    function processAnswer() {
-        const input = document.getElementById('sql-input').value.toLowerCase();
-        const feedback = document.getElementById('feedback-msg');
-        const q = questions[currentQ];
-        
-        // ตรวจสอบ Keywords ทั้งหมดที่ต้องมี
-        const isCorrect = q.keywords.every(k => input.includes(k.toLowerCase()));
+    // ฟังก์ชันช่วยทำความสะอาดข้อความ SQL เพื่อเปรียบเทียบ
+    function cleanSQL(str) {
+        return str.toLowerCase()
+                  .replace(/[\n\r]/g, ' ')      // ลบขึ้นบรรทัดใหม่
+                  .replace(/\s+/g, ' ')         // ยุบช่องว่างที่ซ้อนกันเหลือ 1
+                  .replace(/;\s*$/, '')         // ลบเครื่องหมายเซมิโคลอนท้ายประโยค (ถ้ามี)
+                  .trim();
+    }
 
-        if (isCorrect) {
+    function processAnswer() {
+        const input = cleanSQL(document.getElementById('sql-input').value);
+        const q = questions[currentQ];
+        const correctAnswer = cleanSQL(q.answer);
+        
+        const feedback = document.getElementById('feedback-msg');
+
+        // ตรวจสอบว่าคำตอบตรงกันไหม
+        if (input === correctAnswer) {
             score += 10;
             document.getElementById('current-score').innerText = score;
             feedback.innerHTML = `<i class="fas fa-check-circle"></i> <b>ถูกต้อง!</b> คำสั่ง SQL ทำงานสำเร็จ`;
             feedback.className = "feedback correct";
             document.getElementById('run-btn').classList.add('hidden');
 
-            // แสดงตารางจำลอง หรือข้อความ Success
             if (q.table) {
                 document.getElementById('table-preview').classList.remove('hidden');
                 document.getElementById('simulated-result').innerHTML = `<table class="table-sim">${q.table}</table>`;
@@ -393,12 +361,9 @@
             } else {
                 document.getElementById('finish-btn').classList.remove('hidden');
             }
-            
-            // Effect
-            confetti({ particleCount: 40, spread: 50, origin: { y: 0.8 } });
-
+            confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
         } else {
-            feedback.innerHTML = `<i class="fas fa-times-circle"></i> <b>ผิดพลาด:</b> ไวยากรณ์ไม่ครบถ้วน กรุณาตรวจสอบชื่อ VIEW และคีย์เวิร์ด SQL`;
+            feedback.innerHTML = `<i class="fas fa-times-circle"></i> <b>คำสั่งไม่ถูกต้อง:</b> ตรวจสอบ Syntax, ชื่อตาราง/View หรือเงื่อนไขอีกครั้ง`;
             feedback.className = "feedback wrong";
         }
     }
@@ -412,22 +377,24 @@
         document.getElementById('quiz-area').classList.add('hidden');
         document.getElementById('result-screen').classList.remove('hidden');
         document.getElementById('final-score-val').innerText = score;
+        document.getElementById('congrats-text').innerText = `คุณ ${studentData.name} ทำคะแนนได้ยอดเยี่ยมมาก!`;
         updateLeaderboard();
-        if(score >= 80) confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
+        if(score >= 80) confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
     }
 
     function updateLeaderboard() {
         const board = document.getElementById('leaderboard-body');
         const students = [
-            { name: "เด็กชายสมชาย เรียนดี", score: 100 },
-            { name: "คุณ (You)", score: score, isUser: true },
-            { name: "เด็กหญิงวิภา ขยันเรียน", score: 90 },
-            { name: "เด็กชายมานะ อดทน", score: 80 }
+            { no: "12", name: "เด็กชายสมชาย เรียนดี", score: 100 },
+            { no: studentData.no, name: studentData.name, score: score, isUser: true },
+            { no: "05", name: "เด็กหญิงวิภา ขยันเรียน", score: 90 },
+            { no: "22", name: "เด็กชายมานะ อดทน", score: 80 }
         ];
         students.sort((a, b) => b.score - a.score);
         board.innerHTML = students.map((s, i) => `
             <tr class="${s.isUser ? 'highlight-row' : ''}">
                 <td>${i + 1}</td>
+                <td>${s.no}</td>
                 <td>${s.name}</td>
                 <td>${s.score}</td>
             </tr>
